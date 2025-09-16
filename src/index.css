@@ -1,0 +1,40 @@
+/* Reset some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body basics */
+body, html, #root {
+    height: 100%;
+    font-family: 'Fira Code', monospace;
+    background-color: #0f0f12; /* fallback if App.css gradient fails */
+    color: #e0e0e0;
+    overflow-x: hidden;
+}
+
+/* Links */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Scrollbar styling (optional) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+
+/* Selection */
+::selection {
+    background: rgba(255,200,150,0.3);
+}

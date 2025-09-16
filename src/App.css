@@ -1,0 +1,444 @@
+/* ===== Base page ===== */
+body { 
+    background-color: #0a0a0a; 
+    color: #e0e0e0; 
+    font-family: 'Fira Code', monospace; 
+}
+
+/* ===== Avatars ===== */
+.avatar { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 24px; 
+    margin-right: 12px; 
+    flex-shrink: 0; 
+    box-shadow: 0 0 5px rgba(150,50,150,0.1); 
+    animation: avatarBlend 5s infinite alternate ease-in-out, geminiPulse 10s infinite alternate ease-in-out; 
+}
+
+@keyframes avatarBlend {
+    0% { box-shadow: 0 0 5px rgba(150,50,150,0.1); }
+    50% { box-shadow: 0 0 8px rgba(180,70,180,0.2); }
+    100% { box-shadow: 0 0 5px rgba(150,50,150,0.1); }
+}
+
+.user-avatar { background-color: rgba(50,50,50,0.1); color: #a0a0a0; }
+.gemini-avatar { background-color: rgba(80,40,40,0.1); color: #cc5555; }
+
+/* ===== Bubbles ===== */
+.bubble {
+    padding: 18px 22px;
+    border-radius: 20px;
+    line-height: 1.8;
+    word-wrap: break-word;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    max-width: 75%;
+    min-width: 150px;
+    margin: 0 auto;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 600;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    
+    background-color: rgba(15, 15, 18, 0.9);
+
+    /* --- The Masking Effect --- */
+    -webkit-mask-image: 
+        linear-gradient(white, white),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="1" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+    mask-image: 
+        linear-gradient(white, white),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="1" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+
+    -webkit-mask-composite: source-out;
+    mask-composite: source-out;
+
+    -webkit-mask-size: auto, 150%;
+    mask-size: auto, 150%;
+}
+
+/* Inner bubble (text content) */
+.bubble-inner {
+    display: inline-block;
+    max-width: 75%;
+    text-align: left;
+    white-space: normal;
+    color: #e0e0e0; /* Default solid text color */
+}
+
+/* User and Gemini bubbles */
+.user-bubble {
+    font-size: 1.3em;
+}
+
+.gemini-bubble {
+    font-size: 1.43em;
+}
+
+.user-bubble .bubble-inner {
+    color: #d4c0a4;
+}
+
+.gemini-bubble .bubble-inner {
+    color: #ffbbbb;
+}
+
+/* --- KEYFRAMES --- */
+
+/* Keyframes for the mask animation */
+@keyframes move-noise {
+  0%, 100% { mask-position: 0 0, 0 0; }
+  10% { mask-position: 0 0, -5% -10%; }
+  20% { mask-position: 0 0, -15% 5%; }
+  30% { mask-position: 0 0, 7% -25%; }
+  40% { mask-position: 0 0, -5% 25%; }
+  50% { mask-position: 0 0, -15% 10%; }
+  60% { mask-position: 0 0, 15% 0%; }
+  70% { mask-position: 0 0, 0% 15%; }
+  80% { mask-position: 0 0, 3% 35%; }
+  90% { mask-position: 0 0, -10% 10%; }
+}
+
+/* Slide X User animation */
+@keyframes slide-x-user {
+    0%   { transform: translateX(-80px); }
+    50%  { transform: translateX(0px); }
+    100% { transform: translateX(-80px); }
+}
+
+/* Slide X Gemini animation */
+@keyframes slide-x-gemini {
+    0%   { transform: translateX(80px); }
+    50%  { transform: translateX(0px); }
+    100% { transform: translateX(80px); }
+}
+
+/* Fast Tremble animation */
+@keyframes tremble-fast {
+    0%   { transform: translate(0, 0); }
+    10%  { transform: translate(0.05px, -0.025px); }
+    20%  { transform: translate(-0.075px, 0.05px); }
+    30%  { transform: translate(0.125px, -0.0625px); }
+    40%  { transform: translate(-0.1875px, 0.1125px); }
+    50%  { transform: translate(0.375px, -0.1875px); }
+    60%  { transform: translate(-0.3125px, 0.15px); }
+    70%  { transform: translate(0.2px, -0.1px); }
+    80%  { transform: translate(-0.15px, 0.075px); }
+    90%  { transform: translate(0.075px, -0.0375px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* Gemini pulse text effect */
+@keyframes geminiPulse {
+    0% { text-shadow: 0 0 0.75px #ff9999, 0 0 1.5px #ff6666; }
+    25% { text-shadow: 0 0 3px #ffbbaa, 0 0 6px #ff8888; }
+    50% { text-shadow: 0 0 0.75px #ff9999, 0 0 1.5px #ff6666; }
+}
+
+/* Inline code inside Gemini bubbles */
+.gemini-bubble code {
+    background: rgba(20,20,25,0.8);
+    color: #e0e0e0;
+    padding: 2px 4px;
+    border-radius: 4px;
+    background-clip: border-box;
+    -webkit-text-fill-color: #e0e0e0;
+}
+
+.gemini-bubble code::selection {
+    background-color: transparent;
+    color: #e0e0e0;
+}
+
+/* User pulse text effect */
+@keyframes userPulse {
+    0% { text-shadow: 0 0 0.75px rgba(100, 100, 255, 0.5), 0 0 1.5px rgba(50, 50, 200, 0.5); }
+    25% { text-shadow: 0 0 3px rgba(150, 150, 255, 0.8), 0 0 6px rgba(100, 100, 255, 0.8); }
+    50% { text-shadow: 0 0 0.75px rgba(100, 100, 255, 0.5), 0 0 1.5px rgba(50, 50, 200, 0.5); }
+}
+/* ===== Chat container ===== */
+.chat-container { 
+    width: 100%;
+    display: flex; 
+    margin: 12px 0; 
+    align-items: flex-start; 
+    padding: 5px;
+    border-radius: 25px; 
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.05); 
+    overflow: hidden; 
+    /* justify-content: center; /* center merged bubbles */
+}
+
+.chat-container.merge {
+    justify-content: center; /* center merged bubbles */
+}
+
+.chat-container.merge .bubble-tremble-wrapper {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* Class to semantically indicate the pull-out effect is active */
+.gemini-pulls {
+    /* No direct styles here, acts as a trigger for child animations */
+}
+
+/* Class to semantically indicate the pull-out effect is active for user bubbles */
+.user-pulls {
+    /* No direct styles here, acts as a trigger for child animations */
+}
+
+.chat-container.user-pulls {
+    justify-content: flex-start;
+}
+
+.chat-container.gemini-pulls {
+    justify-content: flex-end;
+}
+
+.chat-pair-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px; 
+    background-color: rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+section[data-testid="stSidebar"] {
+    background-color: #121217;
+    color: #606060 !important; 
+    font-size: 1.1em; 
+    font-family: 'Source Code Pro', monospace !important;
+}
+
+section[data-testid="stSidebar"] a {
+    color: #707880;
+    text-decoration: none;
+    font-size: 1.105em;
+    display: block;
+    margin-bottom: 6px;
+    font-family: 'Source Code Pro', monospace !important;
+    animation: tocGlitchCycle 15s linear infinite;
+}
+
+section[data-testid="stSidebar"] a:hover {
+    text-decoration: underline;
+    color: #9098a0;
+}
+
+section[data-testid="stSidebar"] > div:first-child {
+    position: sticky;
+    top: 12px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* TOC Glitch Cycle Animation */
+@keyframes tocGlitchCycle {
+    0% { /* Normal state at the very beginning of the 15s cycle */
+        transform: translateX(0);
+        filter: brightness(1) contrast(1);
+        text-shadow: none;
+    }
+    0.003% { /* Start of distortion (0.00045s into 15s cycle) */
+        transform: translateX(0.25px);
+        filter: brightness(1.2) contrast(0.7) hue-rotate(5deg);
+        text-shadow: 0.5px 0 0.5px rgba(255, 0, 0, 0.3), -0.5px 0 0.5px rgba(0, 255, 255, 0.3);
+    }
+    0.06% { /* ... various distorted states ... (0.009s into 15s cycle) */
+        transform: translateX(-0.25px);
+        filter: brightness(0.9) contrast(1.2) hue-rotate(-5deg);
+        text-shadow: -0.5px 0 0.5px rgba(0, 255, 0, 0.3), 0.5px 0 0.5px rgba(255, 0, 255, 0.3);
+    }
+    0.12% { /* (0.018s into 15s cycle) */
+        transform: translateX(0.25px);
+        filter: brightness(1.5) contrast(0.4) hue-rotate(10deg);
+        text-shadow: 0.5px 0 0.5px rgba(255, 255, 0, 0.4), -0.5px 0 0.5px rgba(0, 0, 255, 0.4);
+    }
+    0.18% { /* (0.027s into 15s cycle) */
+        transform: translateX(-0.25px);
+        filter: brightness(0.8) contrast(1.5) hue-rotate(-10deg);
+        text-shadow: -0.5px 0 0.5px rgba(255, 0, 0, 0.3), 0.5px 0 0.5px rgba(0, 255, 255, 0.3);
+    }
+    0.24% { /* (0.036s into 15s cycle) */
+        transform: translateX(0.25px);
+        filter: brightness(1.3) contrast(0.6) hue-rotate(8deg);
+        text-shadow: 0.5px 0 0.5px rgba(255, 255, 255, 0.4), -0.5px 0 0.5px rgba(0, 0, 255, 0.4);
+    }
+    0.3% { /* End of distortion (0.045s into 15s cycle) */
+        transform: translateX(0);
+        filter: brightness(1) contrast(1);
+        text-shadow: none;
+    }
+    100% { /* Stay normal until the end of the 15s cycle */
+        transform: translateX(0);
+        filter: brightness(1) contrast(1);
+        text-shadow: none;
+    }
+}
+.grounding-table {
+    margin: 10px 0 10px 80px;      
+    border-collapse: collapse;
+    font-size: 0.85em;
+    width: 100%; /* Changed from auto to 100% */
+    background-color: rgba(40,20,20,0.6); 
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 0 6px rgba(255,120,120,0.15);
+    table-layout: fixed;        
+    min-width: 400px;           
+}
+
+.grounding-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #ddd;
+    vertical-align: top;
+    word-wrap: break-word;
+}
+
+.grounding-table tr td:first-child {
+    width: 150px;               
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: right;
+    color: #ff9999; 
+    min-width: 110px;
+}
+
+.grounding-table tr td:last-child { text-align: left; width: 100%; } /* Changed from auto to 100% */
+
+.grounding-table a.grounding-link {
+    text-decoration: none;
+    color: #ffbbbb;
+    background: rgba(255,100,100,0.15);
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.grounding-table a.grounding-link:hover {
+    background: rgba(255,120,120,0.3);
+    color: #fff;
+}
+
+/* Styling for markdown tables */
+table:not(.grounding-table) {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+    font-size: 0.85em !important; /* Adjusted font size for markdown tables */
+    font-family: 'Source Code Pro', monospace;
+}
+
+
+table:not(.grounding-table) thead {
+    background-color: transparent; /* Inherit from parent */
+    box-shadow: inset 0 0 0 1000px rgba(255, 255, 255, 0.03); /* 3% lighter overlay */
+    font-weight: bold;
+}
+
+table:not(.grounding-table) th,
+table:not(.grounding-table) td {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.75em;
+    text-align: left;
+}
+.part-box {
+    font-family: 'Terminus', monospace; /* Reverted font to Source Code Pro */    
+    font-size: 1.035em; 
+    background: linear-gradient(to right, rgba(194, 187, 255, 0.1), rgba(255, 153, 153, 0.05),  rgba(255,204,136,0.1));
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding: 10px; 
+    border-left: 3px solid rgba(255, 119, 119, 0.1); 
+    margin: 4px 0 4px 72px; 
+    line-height: 1.7;
+    animation: thinkingPulse 30s infinite alternate-reverse ease-out, signalGlitchCycle 0.2s linear infinite;
+}
+
+/* Gemini pulse text effect */
+@keyframes thinkingPulse {
+    0% {
+        text-shadow: 0 0 0.25px rgba(194, 187, 255, 0.1), 0 0 0.5px rgba(255, 248, 187, 0.1),
+                     0 0 0px rgba(255, 255, 0, 0.3), 0 0 0px rgba(0, 0, 255, 0.3); /* Yellow/Blue core */
+    }
+    25% {
+        text-shadow: 0 0 1px  rgba(194, 187, 255, 0.071), 0 0 0.5px rgba(255, 248, 187, 0.071),
+                     0 0 0px rgba(255, 255, 0, 0.6), 0 0 0px rgba(0, 0, 255, 0.6); /* Brighter core */
+    }
+    50% {
+        text-shadow: 0 0 0.25px  rgba(194, 187, 255, 0.53), 0 0 0.5px rgba(255, 248, 187, 0.708),
+                     0 0 0px rgba(255, 255, 0, 0.9), 0 0 0px rgba(0, 0, 255, 0.9); /* Full brightness core */
+    }
+}
+
+/* Signal loss / horizontal distortion effect (0.2s continuous cycle) */
+@keyframes signalGlitchCycle {
+    0% { /* Start with a distorted state */
+        transform: translateX(0.5px);
+        filter: brightness(2.0) contrast(0.8) hue-rotate(25deg); /* More extreme */
+        text-shadow: 1px 0 1.5px rgba(255, 0, 0, 0.5), -1px 0 1.5px rgba(0, 255, 255, 0.5);
+    }
+    10% {
+        transform: translateX(-0.5px);
+        filter: brightness(1.0) contrast(2.0) hue-rotate(-20deg); /* More extreme */
+        text-shadow: -1.5px 0 1.5px rgba(0, 255, 0, 0.5), 1.5px 0 1.5px rgba(255, 0, 255, 0.5);
+    }
+    20% {
+        transform: translateX(0.5px);
+        filter: brightness(2.5) contrast(0.5) hue-rotate(40deg); /* More extreme */
+        text-shadow: 2px 0 2px rgba(255, 255, 0, 0.7), -2px 0 2px rgba(0, 0, 255, 0.7);
+    }
+    30% {
+        transform: translateX(-0.5px);
+        filter: brightness(0.8) contrast(2.2) hue-rotate(-30deg); /* More extreme */
+        text-shadow: -1px 0 1.5px rgba(255, 0, 0, 0.5), 1px 0 1.5px rgba(0, 255, 255, 0.5);
+    }
+    40% {
+        transform: translateX(0.5px);
+        filter: brightness(2.0) contrast(0.7) hue-rotate(35deg); /* More extreme */
+        text-shadow: 1.5px 0 2px rgba(255, 255, 255, 0.6), -1.5px 0 2px rgba(0, 0, 255, 0.6);
+    }
+    50% {
+        transform: translateX(-0.5px);
+        filter: brightness(0.9) contrast(2.5) hue-rotate(-25deg); /* More extreme */
+        text-shadow: -2px 0 2px rgba(0, 255, 0, 0.6), 2px 0 2px rgba(255, 0, 255, 0.6);
+    }
+    60% {
+        transform: translateX(0.5px);
+        filter: brightness(1.8) contrast(0.9) hue-rotate(15deg); /* More extreme */
+        text-shadow: 1px 0 1.5px rgba(255, 255, 255, 0.5), -1px 0 1.5px rgba(0, 255, 255, 0.5);
+    }
+    70% {
+        transform: translateX(-0.5px);
+        filter: brightness(0.7) contrast(2.8) hue-rotate(-35deg); /* More extreme */
+        text-shadow: -2.5px 0 2.5px rgba(255, 0, 0, 0.7), 2.5px 0 2.5px rgba(0, 255, 255, 0.7);
+    }
+    80% {
+        transform: translateX(0.5px);
+        filter: brightness(2.8) contrast(0.3) hue-rotate(45deg); /* More extreme */
+        text-shadow: 2.5px 0 2.5px rgba(255, 255, 0, 0.8), -2.5px 0 2.5px rgba(0, 0, 255, 0.8);
+    }
+    90% {
+        transform: translateX(-0.5px);
+        filter: brightness(0.6) contrast(3.0) hue-rotate(-40deg); /* More extreme */
+        text-shadow: -1.5px 0 1.5px rgba(0, 255, 0, 0.5), 1.5px 0 1.5px rgba(255, 0, 255, 0.5);
+    }
+    100% { /* End with a different distorted state to loop seamlessly */
+        transform: translateX(0.5px);
+        filter: brightness(2.0) contrast(0.8) hue-rotate(25deg); /* More extreme */
+        text-shadow: 1px 0 1.5px rgba(255, 0, 0, 0.5), -1px 0 1.5px rgba(0, 255, 255, 0.5);
+    }
+}
