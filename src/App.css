@@ -35,12 +35,11 @@ body {
     border-radius: 20px;
     line-height: 1.8;
     word-wrap: break-word;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: center;
     max-width: 75%;
     min-width: 150px;
-    margin: 0 auto;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     font-weight: 600;
@@ -75,11 +74,11 @@ body {
 
 /* User and Gemini bubbles */
 .user-bubble {
-    font-size: 1.3em;
+    font-size: 1.0em;
 }
 
 .gemini-bubble {
-    font-size: 1.43em;
+    font-size: 1.1em;
 }
 
 .user-bubble .bubble-inner {
@@ -108,16 +107,16 @@ body {
 
 /* Slide X User animation */
 @keyframes slide-x-user {
-    0%   { transform: translateX(-80px); }
-    50%  { transform: translateX(0px); }
-    100% { transform: translateX(-80px); }
+    0%   { transform: translateX(0px); }
+    50%  { transform: translateX(-5px); }
+    100% { transform: translateX(0px); }
 }
 
 /* Slide X Gemini animation */
 @keyframes slide-x-gemini {
-    0%   { transform: translateX(80px); }
-    50%  { transform: translateX(0px); }
-    100% { transform: translateX(80px); }
+    0%   { transform: translateX(0px); }
+    50%  { transform: translateX(5px); }
+    100% { transform: translateX(0px); }
 }
 
 /* Fast Tremble animation */
@@ -163,27 +162,30 @@ body {
     25% { text-shadow: 0 0 3px rgba(150, 150, 255, 0.8), 0 0 6px rgba(100, 100, 255, 0.8); }
     50% { text-shadow: 0 0 0.75px rgba(100, 100, 255, 0.5), 0 0 1.5px rgba(50, 50, 200, 0.5); }
 }
+
+.animation-paused {
+    animation-play-state: paused !important;
+}
+
 /* ===== Chat container ===== */
 .chat-container { 
     width: 100%;
     display: flex; 
     margin: 12px 0; 
-    align-items: flex-start; 
+    align-items: flex-start !important; 
     padding: 5px;
     border-radius: 25px; 
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.05); 
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.02); 
     overflow: hidden; 
     /* justify-content: center; /* center merged bubbles */
 }
 
 .chat-container.merge {
-    justify-content: center; /* center merged bubbles */
 }
 
 .chat-container.merge .bubble-tremble-wrapper {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
 }
 
 /* Class to semantically indicate the pull-out effect is active */
@@ -197,35 +199,50 @@ body {
 }
 
 .chat-container.user-pulls {
-    justify-content: flex-start;
+    justify-content: flex-start !important;
 }
 
 .chat-container.gemini-pulls {
-    justify-content: flex-end;
+    justify-content: flex-end !important;
 }
 
 .chat-pair-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 20px;
     padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 25px; 
     background-color: rgba(0,0,0,0.1);
     overflow: hidden;
 }
 section[data-testid="stSidebar"] {
-    background-color: #121217;
+    background-color: #121217; /* dark futuristic panel */
     color: #606060 !important; 
-    font-size: 1.1em; 
+    font-size: 1.0em; 
     font-family: 'Source Code Pro', monospace !important;
+    height: 100%; /* Added to ensure it takes full height of flex container */
+    flex-basis: 300px; /* Use flex-basis instead of width for initial size */
+    flex-shrink: 0; /* Prevent the sidebar from shrinking */
+    max-width: 300px; /* Prevent it from getting too wide */
+    overflow: hidden; /* Add this to contain content within the section */
+    position: relative; /* Added for absolute positioning of the button */
+    transition: all 0.3s ease-in-out; /* Smooth transition for width */
+}
+
+@media (max-width: 768px) {
+    section[data-testid="stSidebar"] {
+        flex-basis: 250px; /* Fixed width for smaller screens */
+        min-width: 200px; /* Ensure it's not too small */
+        max-width: none; /* Remove max-width constraint on small screens */
+    }
 }
 
 section[data-testid="stSidebar"] a {
     color: #707880;
     text-decoration: none;
-    font-size: 1.105em;
+    font-size: 1.0em;
     display: block;
     margin-bottom: 6px;
     font-family: 'Source Code Pro', monospace !important;
@@ -243,6 +260,42 @@ section[data-testid="stSidebar"] > div:first-child {
     max-height: 90vh;
     overflow-y: auto;
 }
+
+/* Styles for the sidebar toggle button */
+.sidebar-toggle-button {
+    position: absolute;
+    top: 50%; /* Vertically center */
+    right: 0; /* Position at the right edge */
+    transform: translateY(-50%); /* Adjust for vertical centering */
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1.2em;
+    line-height: 1;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.sidebar-toggle-button:hover {
+    background-color: #555;
+}
+
+/* Collapsed state for the sidebar */
+section[data-testid="stSidebar"].closed {
+    flex-basis: 40px; /* Collapse width to just show the button */
+    max-width: 40px; /* Ensure it collapses fully */
+    overflow: hidden; /* Hide content when collapsed */
+    padding-right: 0; /* Adjust padding */
+}
+
+/* Adjust main content when sidebar is closed */
+.main-content.sidebar-closed {
+    margin-left: 40px; /* Adjust margin to account for collapsed sidebar */
+}
+
+
 
 /* TOC Glitch Cycle Animation */
 @keyframes tocGlitchCycle {
@@ -302,7 +355,7 @@ section[data-testid="stSidebar"] > div:first-child {
 
 .grounding-table td {
     padding: 6px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.02);
     color: #ddd;
     vertical-align: top;
     word-wrap: break-word;
@@ -351,7 +404,7 @@ table:not(.grounding-table) thead {
 
 table:not(.grounding-table) th,
 table:not(.grounding-table) td {
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0.75em;
     text-align: left;
 }
@@ -382,6 +435,19 @@ table:not(.grounding-table) td {
         text-shadow: 0 0 0.25px  rgba(194, 187, 255, 0.53), 0 0 0.5px rgba(255, 248, 187, 0.708),
                      0 0 0px rgba(255, 255, 0, 0.9), 0 0 0px rgba(0, 0, 255, 0.9); /* Full brightness core */
     }
+}
+
+/* Custom Collapsible Thought Box */
+.collapsible-thought {
+    /* Basic styling for the container */
+}
+
+.collapsible-summary {
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ffbbbb;
+    margin-bottom: 5px;
 }
 
 /* Signal loss / horizontal distortion effect (0.2s continuous cycle) */
@@ -442,3 +508,25 @@ table:not(.grounding-table) td {
         text-shadow: 1px 0 1.5px rgba(255, 0, 0, 0.5), -1px 0 1.5px rgba(0, 255, 255, 0.5);
     }
 }
+
+.app-layout {
+  display: flex;
+  height: 100vh; /* Full viewport height */
+}
+
+.main-content {
+  flex-grow: 1; /* Main content takes remaining space */
+  overflow-y: auto; /* Make main content scrollable */
+  padding: 20px;
+  width: 100%; /* Ensure main-content takes full width */
+  height: 100%; /* Explicitly set height to 100% */
+  scroll-behavior: auto !important; /* Ensure instant scrolling */
+}
+
+/* Force ReactVirtualized__Grid__innerScrollContainer to take full width */
+.ReactVirtualized__Grid__innerScrollContainer {
+  width: 100% !important;
+}
+
+
+

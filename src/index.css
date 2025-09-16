@@ -11,7 +11,7 @@ body, html, #root {
     font-family: 'Fira Code', monospace;
     background-color: #0f0f12; /* fallback if App.css gradient fails */
     color: #e0e0e0;
-    overflow-x: hidden;
+    overflow: hidden; /* Changed from overflow-x: hidden */
 }
 
 /* Links */
