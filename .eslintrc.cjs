@@ -15,6 +15,7 @@ module.exports = {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "ignorePatterns": ["dist"],
   "plugins": [
     "react",
     "react-refresh"
