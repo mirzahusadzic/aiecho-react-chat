@@ -151,7 +151,7 @@ const Row = ({ index, style, data }) => {
         )}
         {turn.thinkingMessage && (
           <Bubble
-            role="gemini"
+            role="gemini-thinking"
             html={safeChunkBody(turn.thinkingMessage.parts?.map(p => p.text).join("" ) || "")}
             id={`gemini-thought-${id}`}
             isScrolling={isUserScrolling}

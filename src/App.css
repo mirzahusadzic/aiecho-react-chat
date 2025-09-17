@@ -28,6 +28,7 @@ body {
 
 .user-avatar { background-color: rgba(50,50,50,0.1); color: #a0a0a0; }
 .gemini-avatar { background-color: rgba(80,40,40,0.1); color: #cc5555; }
+.gemini-thinking-avatar { background-color: rgba(40,80,40,0.1); color: #55cc55; }
 
 /* ===== Bubbles ===== */
 .bubble {
@@ -79,6 +80,12 @@ body {
 
 .gemini-bubble {
     font-size: 1.1em;
+}
+
+.bubble.gemini-thinking-bubble {
+    font-size: 1.0em;
+    color: #99ff99;
+    border: 1px dashed rgba(153, 255, 153, 0.3);
 }
 
 .user-bubble .bubble-inner {
