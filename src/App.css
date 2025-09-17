@@ -51,7 +51,7 @@ body {
     display: inline-block;
     max-width: 90%;
     text-align: left;
-color: #E0E0E0;
+    color: #E0E0E0;
     font-family: 'Fira Code', monospace;
     font-weight: 500;
     -moz-osx-font-smoothing: grayscale;
@@ -59,16 +59,17 @@ color: #E0E0E0;
 
 /* User and Gemini bubbles */
 .user-bubble {
-    font-size: 1.21em;
+    font-size: 1.15em;
     box-shadow: inset 0 0 8px rgba(245, 166, 35, 0.2); /* Amber-orange inner glow */
     background-color: #0d1117;
     border-color: rgba(245, 166, 35, 0.3);
 }
 
 .gemini-bubble {
-    font-size: 1.21em;
+    font-size: 1.15em;
     box-shadow: inset 0 0 8px rgba(46, 160, 67, 0.2); /* Electric cyan inner glow */
     background-color: #0d1117;
+    margin-left: auto; /* Push Gemini bubble to the right */
 }
 
 .bubble.gemini-thinking-bubble {
@@ -165,10 +166,12 @@ color: #E0E0E0;
     overflow-x: auto;
     margin: 1em 0;
     font-family: 'Fira Code', monospace;
-    font-size: 0.9em;
+    font-size: 1.0em;
     line-height: 1.5;
     border: 1px solid rgba(46, 160, 67, 0.3);
     box-shadow: inset 0 0 8px rgba(46, 160, 67, 0.2);
+    max-width: 100%; /* Ensure pre block does not exceed parent width */
+    width: 100%; /* Ensure pre block takes full available width */
 }
 
 .bubble-inner pre code,
@@ -179,6 +182,8 @@ color: #E0E0E0;
     border-radius: 0;
     font-size: inherit;
     line-height: inherit;
+    white-space: pre-wrap; /* Allow text to wrap within code blocks */
+    word-break: break-all; /* Break long words to prevent overflow */
 }
 
 .file-name-display {
@@ -509,11 +514,11 @@ table:not(.grounding-table) td {
 }
 .part-box {
     font-family: 'Fira Code', monospace;
-    font-size: 0.9em;
+    font-size: 1.0em;
     color: rgba(245, 166, 35, 0.7); /* Amber-orange */
     padding: 10px; 
     border-left: 3px solid rgba(245, 166, 35, 0.2); 
-    margin: 4px 0 4px 72px;
+    margin: 4px 0;
     animation: thinkingPulse 30s infinite alternate-reverse ease-out, signalGlitchCycle 0.1s linear infinite;
     line-height: 1.7;
 }
@@ -628,7 +633,7 @@ table:not(.grounding-table) td {
   -webkit-background-clip: text;
   -webkit-text-fill-color:  #2ea043;
   text-shadow: 0 0 8px rgba(46, 160, 67, 0.8), 0 0 8px rgba(245, 166, 35, 0.5);
-  font-size: 1.5em;
+  font-size: 1.65em;
   padding: 0;
   margin-bottom: 0;
   text-align: left;
