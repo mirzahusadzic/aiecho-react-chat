@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import ChatRenderer from './chatRenderer.jsx';
 import SidebarTOC from './SidebarTOC.jsx';
 import { loadChatJSON } from './utils/loadJson.js';
@@ -9,20 +9,19 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [animationsPaused, setAnimationsPaused] = useState(true); // New state for animations
   const [chatListRef, setChatListRef] = useState(null);
-  const pendingScrollToIndex = React.useRef(null);
-  const [jsonFilePath, setJsonFilePath] = useState('/How_Can_I_Help_You.json'); // New state for JSON file path
-
-  const handleLoadJson = () => {
-    loadChatJSON(jsonFilePath)
-      .then(setChunks)
-      .catch(err => console.error('Failed to load chat JSON', err));
-  };
+  const pendingScrollToIndex = useRef(null);
 
   useEffect(() => {
-    handleLoadJson(); // Load initial JSON or when path changes
-  }, [jsonFilePath]); // Depend on jsonFilePath
+    // Load default JSON on initial mount
+    // loadChatJSON('/How_Can_I_Help_You.json')
+    //   .then(setChunks)
+    //   .catch(err => console.error('Failed to load chat JSON', err));
+  }, []);
 
   const { conversationTurns, originalIndexToTurnIndexMap } = useMemo(() => {
+    if (!Array.isArray(chunks)) {
+      return { conversationTurns: [], originalIndexToTurnIndexMap: {} };
+    }
     const validChunks = chunks.filter(chunk => chunk?.role);
     const turns = [];
     const newMap = {};
@@ -78,19 +77,9 @@ export default function App() {
         setExpandThinking={setExpandThinking}
         animationsPaused={animationsPaused}
         setAnimationsPaused={setAnimationsPaused}
+        setChunks={setChunks} // Pass setChunks to SidebarTOC
       />
       <div className={`main-content ${isSidebarOpen ? '' : 'sidebar-closed'}`}> {/* Apply ref and class */}
-        <div style={{ marginBottom: '1em' }}>
-          <input
-            type="text"
-            value={jsonFilePath}
-            onChange={(e) => setJsonFilePath(e.target.value)}
-            placeholder="Enter JSON file path (e.g., /path/to/file.json)"
-            style={{ width: '300px', marginRight: '10px', padding: '5px' }}
-          />
-          <button onClick={handleLoadJson} style={{ padding: '5px 10px' }}>Load JSON</button>
-        </div>
-
         {conversationTurns.length > 0 ? (
           <ChatRenderer
             key={conversationTurns.length} // Force re-mount on data change

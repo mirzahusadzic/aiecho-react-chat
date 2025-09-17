@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
@@ -13,12 +13,12 @@ function getPlainTextFromMarkdown(markdownText) {
     tempDiv.innerHTML = sanitizedHtml;
     return tempDiv.textContent || tempDiv.innerText || '';
   } catch (e) {
-    console.error('Error processing markdown for TOC:', e);
+    // console.error('Error processing markdown for TOC:', e); // Removed log
     return markdownText; // Fallback to raw text on error
   }
 }
 
-export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex, expandThinking, setExpandThinking, animationsPaused, setAnimationsPaused }) {
+export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex, expandThinking, setExpandThinking, animationsPaused, setAnimationsPaused, setChunks }) {
   const handleTocClick = React.useCallback((e, originalIndex) => {
     e.preventDefault();
     if (chatListRef && chatListRef.current) {
@@ -29,32 +29,83 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
         // Scroll to bring the item into view. This is the first, approximate scroll.
         chatListRef.current.scrollToItem(validIndex, "auto");
       } else {
-        console.warn('validIndex is undefined for originalIndex:', originalIndex);
+        // console.warn('validIndex is undefined for originalIndex:', originalIndex); // Removed log
       }
     } else {
-      console.warn('chatListRef.current is not available.');
+      // console.warn('chatListRef.current is not available.'); // Removed log
     }
   }, [chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex]);
+
+  const fileInputRef = useRef(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click(); // triggers file picker
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsedJson = JSON.parse(e.target.result);
+          // console.log('SidebarTOC.jsx: Parsed JSON:', parsedJson); // Removed log
+          const extractedChunks = parsedJson?.chunkedPrompt?.chunks || [];
+          // console.log('SidebarTOC.jsx: Extracted Chunks:', extractedChunks); // Removed log
+          // console.log('SidebarTOC.jsx: Is Extracted Chunks an array?', Array.isArray(extractedChunks)); // Removed log
+
+          if (Array.isArray(extractedChunks)) {
+            setChunks(extractedChunks);
+          } else {
+            console.error("Error: Extracted chat chunks are not an array.");
+            alert("Error: Selected JSON file does not contain a valid array of chat chunks under 'chunkedPrompt.chunks'.");
+            setChunks([]); // Clear chunks or handle as appropriate
+          }
+        } catch (error) {
+          console.error("Error parsing JSON file:", error);
+          alert("Error parsing JSON file. Please ensure it's a valid JSON.");
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
 
   return (
     <section data-testid="stSidebar" className={`${isSidebarOpen ? '' : 'closed'} ${animationsPaused ? 'animations-paused' : ''}`}> {/* Apply 'closed' class */}
       <div> {/* This div will be the :first-child targeted by CSS */}
-        <label style={{ display: 'block', margin: '1em 0' }}>
+        <label className="sidebar-control-label">
           <input
             type="checkbox"
             checked={expandThinking}
             onChange={e => setExpandThinking(e.target.checked)}
-          />{' '}
+            className="sidebar-checkbox"
+          />
           Show Thoughts
         </label>
-        <label style={{ display: 'block', margin: '1em 0' }}>
+        <label className="sidebar-control-label">
           <input
             type="checkbox"
             checked={animationsPaused}
             onChange={e => setAnimationsPaused(e.target.checked)}
-          />{' '}
+            className="sidebar-checkbox"
+          />
           Pause Animations
         </label>
+        <div className="sidebar-control-group">
+          <button
+            onClick={handleButtonClick}
+            className="sidebar-button"
+          >
+            Choose JSON File
+          </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+            accept=".json"
+          />
+        </div>
         <h3>⚕ User Messages</h3>
         <nav>
           {chunks.map((chunk, i) => {
