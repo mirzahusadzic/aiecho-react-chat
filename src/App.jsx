@@ -9,14 +9,34 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [animationsPaused, setAnimationsPaused] = useState(true); // New state for animations
   const [chatListRef, setChatListRef] = useState(null);
-  const pendingScrollToIndex = useRef(null);
+  const [scrollTargetIndex, setScrollTargetIndex] = useState(null);
   const [fileName, setFileName] = useState(''); // New state for file name
 
   useEffect(() => {
     // Load default JSON on initial mount
-    // loadChatJSON('/How_Can_I_Help_You.json')
-    //   .then(setChunks)
-    //   .catch(err => console.error('Failed to load chat JSON', err));
+    loadChatJSON('/How_Can_I_Help_You.json')
+       .then(setChunks)
+       .catch(err => console.error('Failed to load chat JSON', err));
+
+    // Handle initial URL hash for scrolling
+    const handleInitialHashScroll = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#msg')) {
+        const msgIndex = parseInt(hash.substring(4), 10);
+        if (!isNaN(msgIndex)) {
+          setScrollTargetIndex(msgIndex-1);
+          console.log('App.jsx: Initial hash scroll target index:', msgIndex);
+        }
+      }
+    };
+
+    handleInitialHashScroll();
+
+    window.addEventListener('hashchange', handleInitialHashScroll);
+
+    return () => {
+      window.removeEventListener('hashchange', handleInitialHashScroll);
+    };
   }, []);
 
   const { conversationTurns, originalIndexToTurnIndexMap } = useMemo(() => {
@@ -61,6 +81,17 @@ export default function App() {
     return { conversationTurns: turns, originalIndexToTurnIndexMap: newMap };
   }, [chunks]);
 
+  // Effect to perform the scroll once chatListRef and conversationTurns are ready
+  useEffect(() => {
+    if (chatListRef && chatListRef.current && conversationTurns.length > 0 && scrollTargetIndex !== null) {
+      chatListRef.current.scrollToItem(scrollTargetIndex, "start"); // Corrected access
+    }
+  }, [chatListRef, conversationTurns, scrollTargetIndex]); // Removed setScrollTargetIndex from dependencies
+
+  const handleScrollComplete = React.useCallback(() => {
+    setScrollTargetIndex(null);
+  }, []);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -73,7 +104,8 @@ export default function App() {
         toggleSidebar={toggleSidebar}
         chatListRef={chatListRef}
         originalIndexToValidIndexMap={originalIndexToTurnIndexMap}
-        pendingScrollToIndex={pendingScrollToIndex}
+        scrollTargetIndex={scrollTargetIndex}
+        setScrollTargetIndex={setScrollTargetIndex}
         expandThinking={expandThinking}
         setExpandThinking={setExpandThinking}
         animationsPaused={animationsPaused}
@@ -93,7 +125,8 @@ export default function App() {
             expandThinking={expandThinking}
             animationsEnabled={!animationsPaused} // Pass animationsEnabled prop
             onListRef={setChatListRef}
-            pendingScrollToIndex={pendingScrollToIndex}
+            scrollTargetIndex={scrollTargetIndex}
+            onScrollComplete={handleScrollComplete}
           />
         ) : (
           <p>Loading chat...</p>

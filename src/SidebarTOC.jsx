@@ -18,23 +18,22 @@ function getPlainTextFromMarkdown(markdownText) {
   }
 }
 
-export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex, expandThinking, setExpandThinking, animationsPaused, setAnimationsPaused, setChunks, setFileName, fileName }) {
+export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap, setScrollTargetIndex, expandThinking, setExpandThinking, animationsPaused, setAnimationsPaused, setChunks, setFileName, fileName }) {
   const handleTocClick = React.useCallback((e, originalIndex) => {
     e.preventDefault();
-    if (chatListRef && chatListRef.current) {
+    if (chatListRef) {
       const validIndex = originalIndexToValidIndexMap[originalIndex];
       if (validIndex !== undefined) {
-        // Set the pending index first
-        pendingScrollToIndex.current = validIndex;
-        // Scroll to bring the item into view. This is the first, approximate scroll.
-        chatListRef.current.scrollToItem(validIndex, "auto");
+        // Set the scroll target index
+        // We don't directly scroll here, but set the state that App.jsx watches
+        setScrollTargetIndex(validIndex);
       } else {
         // console.warn('validIndex is undefined for originalIndex:', originalIndex); // Removed log
       }
     } else {
       // console.warn('chatListRef.current is not available.'); // Removed log
     }
-  }, [chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex]);
+  }, [chatListRef, originalIndexToValidIndexMap, setScrollTargetIndex]);
 
   const fileInputRef = useRef(null);
 

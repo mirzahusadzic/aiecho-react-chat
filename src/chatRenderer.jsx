@@ -186,7 +186,7 @@ const Row = ({ index, style, data }) => {
 };
 
 // Main chat renderer
-export default function ChatRenderer({ conversationTurns, expandThinking, onListRef, pendingScrollToIndex, animationsEnabled: propAnimationsEnabled }) {
+export default function ChatRenderer({ conversationTurns, expandThinking, onListRef, scrollTargetIndex, onScrollComplete, animationsEnabled: propAnimationsEnabled }) {
   const containerRef = React.useRef(null);
   const [listWidth, setListWidth] = React.useState(0);
   const [listHeight, setListHeight] = React.useState(0);
@@ -222,6 +222,9 @@ export default function ChatRenderer({ conversationTurns, expandThinking, onList
       if (listRef.current && listRef.current._outerRef.scrollTop === lastScrollTop) {
         // Scroll has stopped
         setIsScrollingWithDelay(false);
+        if (onScrollComplete) {
+          onScrollComplete();
+        }
         cancelAnimationFrame(frameId);
         frameId = null;
       } else {
@@ -295,24 +298,24 @@ export default function ChatRenderer({ conversationTurns, expandThinking, onList
           itemSize={getItemSize}
           estimatedItemSize={250}
           overscanCount={10}
-          itemData={{ conversationTurns, expandThinking, itemHeightsRef, listRef, isScrolling: isScrollingWithDelay, animationsEnabled: effectiveAnimationsEnabled, expandedThoughtIds, toggleThoughtExpanded, pendingScrollToIndex }}
+          itemData={{ conversationTurns, expandThinking, itemHeightsRef, listRef, isScrolling: isScrollingWithDelay, animationsEnabled: effectiveAnimationsEnabled, expandedThoughtIds, toggleThoughtExpanded, scrollTargetIndex }}
           onScroll={handleListScroll}
           onItemsRendered={({ visibleStartIndex, visibleStopIndex }) => {
             // Update isUserAtBottom based on visible items
             setIsUserAtBottom(visibleStopIndex === conversationTurns.length - 1);
 
             // Check if there's a pending scroll to an index
-            if (pendingScrollToIndex && pendingScrollToIndex.current !== null) {
-              const targetIndex = pendingScrollToIndex.current;
+            if (scrollTargetIndex !== null) {
+              const targetIndex = scrollTargetIndex;
               // If the target index is now visible, perform the final scroll
               if (targetIndex >= visibleStartIndex && targetIndex <= visibleStopIndex) {
                 listRef.current.scrollToItem(targetIndex, "start");
                 // Introduce a small delay to allow layout to settle, then re-scroll for precision
                 setTimeout(() => {
-                  // Only re-scroll if the pending index hasn't changed (i.e., no new click during delay)
-                  if (pendingScrollToIndex.current === targetIndex) {
+                  // Only re-scroll if the target index hasn't changed (i.e., no new click during delay)
+                  // App.jsx is responsible for clearing scrollTargetIndex after the scroll effect.
+                  if (scrollTargetIndex === targetIndex) {
                     listRef.current.scrollToItem(targetIndex, "start");
-                    pendingScrollToIndex.current = null; // Clear the pending index after final scroll
                   }
                 }, 50); // 50ms delay
               }
