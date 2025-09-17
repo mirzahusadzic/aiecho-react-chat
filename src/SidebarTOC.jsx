@@ -18,27 +18,52 @@ function getPlainTextFromMarkdown(markdownText) {
   }
 }
 
-export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap }) {
-  const handleTocClick = (e, originalIndex) => {
+export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex, expandThinking, setExpandThinking, animationsPaused, setAnimationsPaused }) {
+  const handleTocClick = React.useCallback((e, originalIndex) => {
     e.preventDefault();
     if (chatListRef && chatListRef.current) {
       const validIndex = originalIndexToValidIndexMap[originalIndex];
       if (validIndex !== undefined) {
-        chatListRef.current.scrollToItem(validIndex, "auto"); // Scroll to the item
+        // Set the pending index first
+        pendingScrollToIndex.current = validIndex;
+        // Scroll to bring the item into view. This is the first, approximate scroll.
+        chatListRef.current.scrollToItem(validIndex, "auto");
+      } else {
+        console.warn('validIndex is undefined for originalIndex:', originalIndex);
       }
+    } else {
+      console.warn('chatListRef.current is not available.');
     }
-  };
+  }, [chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex]);
 
   return (
-    <section data-testid="stSidebar" className={isSidebarOpen ? '' : 'closed'}> {/* Apply 'closed' class */}
+    <section data-testid="stSidebar" className={`${isSidebarOpen ? '' : 'closed'} ${animationsPaused ? 'animations-paused' : ''}`}> {/* Apply 'closed' class */}
       <div> {/* This div will be the :first-child targeted by CSS */}
+        <label style={{ display: 'block', margin: '1em 0' }}>
+          <input
+            type="checkbox"
+            checked={expandThinking}
+            onChange={e => setExpandThinking(e.target.checked)}
+          />{' '}
+          Show Thoughts
+        </label>
+        <label style={{ display: 'block', margin: '1em 0' }}>
+          <input
+            type="checkbox"
+            checked={animationsPaused}
+            onChange={e => setAnimationsPaused(e.target.checked)}
+          />{' '}
+          Pause Animations
+        </label>
         <h3>⚕ User Messages</h3>
         <nav>
           {chunks.map((chunk, i) => {
             if (chunk.role?.toLowerCase() === 'user') {
+              const validIndex = originalIndexToValidIndexMap[i];
+              if (validIndex === undefined) return null; // Skip if not a valid item in the virtualized list
               const text = getPlainTextFromMarkdown(chunk.text);
               const short_preview = text.length > 40 ? text.substring(0, 37) + '...' : text;
-              const label = `${i + 1}. ${short_preview}`;
+              const label = `${validIndex + 1}. ${short_preview}`;
               return (
                 <a key={`toc-item-${i}`} href={`#msg${i}`} onClick={(e) => handleTocClick(e, i)}>
                   {label}

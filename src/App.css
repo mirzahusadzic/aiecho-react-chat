@@ -167,7 +167,14 @@ body {
     animation-play-state: paused !important;
 }
 
-/* ===== Chat container ===== */
+.animations-paused {
+    transition: none !important;
+    animation-play-state: paused !important; /* Pause any direct animations on the element */
+}
+
+section[data-testid="stSidebar"].animations-paused a {
+    animation-play-state: paused !important;
+}
 .chat-container { 
     width: 100%;
     display: flex; 

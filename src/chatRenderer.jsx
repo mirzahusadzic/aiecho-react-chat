@@ -2,6 +2,7 @@ import React from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { VariableSizeList as List} from "react-window";
+import useResizeObserver from '@react-hook/resize-observer';
 import './App.css';   // chat-specific
 
 // Convert markdown → sanitized HTML
@@ -46,14 +47,14 @@ function Bubble({ role, html, id, isScrolling: isScrollingWithDelay, isThought, 
 
   return (
     <div className={containerClass} id={id}>
-      <div className={role + "-avatar avatar"}>{avatar}</div>
+      <div className={`${role}-avatar avatar ${animationsEnabled ? '' : 'animation-paused'}`}>{avatar}</div>
           <div className="bubble-tremble-wrapper">
             <div className={`${bubbleClass} ${animationsEnabled ? '' : 'animation-paused'}`} style={{ "--rand": rand, animation: slideAnimation }}>
               {isThought ? (
                 <div className="collapsible-thought">
                   <div className="collapsible-summary" onClick={() => toggleThoughtExpanded(id)}>۩</div>
                   {(isThoughtExpanded || expandThinking) && (
-                    <div className="part-box" dangerouslySetInnerHTML={{ __html: html }} />
+                    <div className={`part-box ${animationsEnabled ? '' : 'animation-paused'}`} dangerouslySetInnerHTML={{ __html: html }} />
                   )}
                 </div>
               ) : (
@@ -103,26 +104,21 @@ function GroundingTable({ grounding, rowIndex }) {
 
 // Row component for react-window
 const Row = ({ index, style, data }) => {
-  const { conversationTurns, expandThinking, itemHeightsRef, listRef, isScrolling: isUserScrolling, animationsEnabled, expandedThoughtIds, toggleThoughtExpanded } = data; // Access animationsEnabled, expandedThoughtIds, toggleThoughtExpanded from data
+  const { conversationTurns, expandThinking, itemHeightsRef, listRef, isScrolling: isUserScrolling, animationsEnabled, expandedThoughtIds, toggleThoughtExpanded } = data;
   const turn = conversationTurns[index];
-
   const rowRef = React.useRef(null);
 
   React.useLayoutEffect(() => {
-    if (!rowRef.current) {
-      return;
-    }
+    if (!rowRef.current) return;
 
     const observer = new ResizeObserver(() => {
-      if (!rowRef.current) {
-        return;
-      }
-      const measuredHeight = rowRef.current.offsetHeight;
-      const storedHeight = itemHeightsRef.current.get(index);
+      if (!rowRef.current) return;
+      const newHeight = rowRef.current.offsetHeight;
+      const currentHeight = itemHeightsRef.current.get(index);
 
-      if (measuredHeight !== storedHeight) {
-        itemHeightsRef.current.set(index, measuredHeight);
-        if (listRef.current) { // Always reset if height changed
+      if (newHeight > 0 && Math.abs(newHeight - (currentHeight || 0)) > 1) {
+        itemHeightsRef.current.set(index, newHeight);
+        if (listRef.current) {
           listRef.current.resetAfterIndex(index);
         }
       }
@@ -130,18 +126,16 @@ const Row = ({ index, style, data }) => {
 
     observer.observe(rowRef.current);
 
-    return () => {
-      observer.disconnect();
-    };
-  }, [index, itemHeightsRef, listRef, turn, expandThinking]); // Re-measure when content or index changes
+    return () => observer.disconnect();
+  }, [index, turn, expandThinking, expandedThoughtIds, listRef, itemHeightsRef]);
 
-  if (!turn) return null; // Handle empty or invalid turns
+  if (!turn) return null;
 
   const id = `msg${index}`;
 
   return (
-    <div style={style}> {/* react-window applies positioning styles here */}
-      <div ref={rowRef} className="chat-pair-container" id={id}> {/* Inner div to observe for content height */}
+    <div style={style}> 
+      <div ref={rowRef} className="chat-pair-container" id={id}>
         {turn.userMessage && (
           <Bubble
             role="user"
@@ -150,34 +144,35 @@ const Row = ({ index, style, data }) => {
             isScrolling={isUserScrolling}
             isThought={false}
             expandThinking={expandThinking}
-            animationsEnabled={animationsEnabled} // Pass animationsEnabled
+            animationsEnabled={animationsEnabled}
             expandedThoughtIds={expandedThoughtIds}
             toggleThoughtExpanded={toggleThoughtExpanded}
           />
         )}
         {turn.thinkingMessage && (
-                      <Bubble
-                      role="gemini"
-                      html={safeChunkBody(turn.thinkingMessage.parts?.map(p => p.text).join("") || "")}
-                      id={`gemini-thought-${id}`}
-                      isScrolling={isUserScrolling}
-                      isThought={true}
-                      expandThinking={expandThinking}
-                      animationsEnabled={animationsEnabled}
-                      expandedThoughtIds={expandedThoughtIds}
-                      toggleThoughtExpanded={toggleThoughtExpanded}
-                    />        )}
+          <Bubble
+            role="gemini"
+            html={safeChunkBody(turn.thinkingMessage.parts?.map(p => p.text).join("" ) || "")}
+            id={`gemini-thought-${id}`}
+            isScrolling={isUserScrolling}
+            isThought={true}
+            expandThinking={expandThinking}
+            animationsEnabled={animationsEnabled}
+            expandedThoughtIds={expandedThoughtIds}
+            toggleThoughtExpanded={toggleThoughtExpanded}
+          />
+        )}
         {turn.geminiMessage && (
           <Bubble
             role="gemini"
             html={safeChunkBody(
-              turn.geminiMessage.text || turn.geminiMessage.parts?.map(p => p.text).join("") || ""
+              turn.geminiMessage.text || turn.geminiMessage.parts?.map(p => p.text).join("" ) || ""
             )}
             id={`gemini-model-${id}`}
             isScrolling={isUserScrolling}
             isThought={false}
             expandThinking={expandThinking}
-            animationsEnabled={animationsEnabled} // Pass animationsEnabled
+            animationsEnabled={animationsEnabled}
             expandedThoughtIds={expandedThoughtIds}
             toggleThoughtExpanded={toggleThoughtExpanded}
           />
@@ -191,54 +186,19 @@ const Row = ({ index, style, data }) => {
 };
 
 // Main chat renderer
-export default function ChatRenderer({ chunks, expandThinking, onListRef }) {
-  const validChunks = chunks.filter(chunk => chunk?.role);
-
-  const conversationTurns = React.useMemo(() => {
-    const turns = [];
-    let i = 0;
-    while (i < validChunks.length) {
-      const turn = { userMessage: null, thinkingMessage: null, geminiMessage: null, grounding: null };
-
-      // Find user message
-      if (validChunks[i].role?.toLowerCase() === 'user') {
-        turn.userMessage = validChunks[i];
-        i++;
-      }
-
-      // Find thinking message (if any)
-      if (i < validChunks.length && validChunks[i].role?.toLowerCase() === 'model' && validChunks[i].isThought) {
-        turn.thinkingMessage = validChunks[i];
-        i++;
-      }
-
-      // Find gemini message
-      if (i < validChunks.length && validChunks[i].role?.toLowerCase() === 'model' && !validChunks[i].isThought) {
-        turn.geminiMessage = validChunks[i];
-        turn.grounding = validChunks[i].grounding;
-        i++;
-      }
-
-      // Handle cases where a turn might start with a model message (orphan)
-      if (!turn.userMessage && (turn.thinkingMessage || turn.geminiMessage)) {
-        // This is an orphaned model message, push it as a new turn
-        turns.push(turn);
-      } else if (turn.userMessage || turn.thinkingMessage || turn.geminiMessage) {
-        // Push the turn if it contains any message
-        turns.push(turn);
-      }
-    }
-    return turns;
-  }, [validChunks]);
-
+export default function ChatRenderer({ conversationTurns, expandThinking, onListRef, pendingScrollToIndex, animationsEnabled: propAnimationsEnabled }) {
   const containerRef = React.useRef(null);
   const [listWidth, setListWidth] = React.useState(0);
   const [listHeight, setListHeight] = React.useState(0);
   const [isScrollingWithDelay, setIsScrollingWithDelay] = React.useState(false);
-  const scrollTimeoutRef = React.useRef(null); // This ref will now store the requestAnimationFrame ID
   const [isUserAtBottom, setIsUserAtBottom] = React.useState(true);
-  const [animationsEnabled, setAnimationsEnabled] = React.useState(true); // New state for controlling animations
-  const [expandedThoughtIds, setExpandedThoughtIds] = React.useState(new Set()); // State to track expanded thoughts
+  const [expandedThoughtIds, setExpandedThoughtIds] = React.useState(new Set());
+
+  const listRef = React.useRef(null);
+  const itemHeightsRef = React.useRef(new Map());
+
+  // Calculate effective animationsEnabled by combining prop and scrolling state
+  const effectiveAnimationsEnabled = propAnimationsEnabled && !isScrollingWithDelay;
 
   const toggleThoughtExpanded = React.useCallback((id) => {
     setExpandedThoughtIds(prev => {
@@ -252,12 +212,6 @@ export default function ChatRenderer({ chunks, expandThinking, onListRef }) {
     });
   }, []);
 
-  console.log('isScrollingWithDelay (outside handleScroll):', isScrollingWithDelay);
-
-  const listRef = React.useRef(null);
-  const itemHeightsRef = React.useRef(new Map());
-
-  // Manage isScrollingWithDelay using List's onScroll prop
   const handleListScroll = React.useCallback(({ scrollOffset }) => {
     // This is the scroll event from react-window
     // We need to detect when scrolling stops
@@ -282,25 +236,10 @@ export default function ChatRenderer({ chunks, expandThinking, onListRef }) {
     }
   }, [listRef, setIsScrollingWithDelay]);
 
-  React.useEffect(() => {
-    console.log('ChatRenderer mounted');
-    return () => {
-      console.log('ChatRenderer unmounted');
-    };
-  }, []);
-
-  // Effect to manage animationsEnabled state
-  React.useEffect(() => {
-    if (isScrollingWithDelay) {
-      setAnimationsEnabled(false); // Disable animations immediately when scrolling starts
-    } else {
-      // Enable animations after a short delay when scrolling stops
-      const timeout = setTimeout(() => {
-        setAnimationsEnabled(true);
-      }, 100); // 100ms delay after scroll stops
-      return () => clearTimeout(timeout);
-    }
-  }, [isScrollingWithDelay]);
+  useResizeObserver(containerRef, (entry) => {
+    setListWidth(entry.contentRect.width);
+    setListHeight(entry.contentRect.height);
+  });
 
   // Custom scroll event listener to manage isScrollingWithDelay
   React.useEffect(() => {
@@ -317,64 +256,70 @@ export default function ChatRenderer({ chunks, expandThinking, onListRef }) {
     };
   }, [containerRef, handleListScroll]); // Dependency on containerRef and handleListScroll
 
-  const getItemSize = index => {
-    const size = itemHeightsRef.current.get(index) || 250;
-    return size;
-  };
-
-  React.useEffect(() => {
-    if (!containerRef.current) {
-      return;
-    }
-
-    const observer = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        setListWidth(entry.contentRect.width);
-        setListHeight(entry.contentRect.height);
-      }
-    });
-
-    observer.observe(containerRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
   React.useEffect(() => {
     if (onListRef) {
       onListRef(listRef);
     }
   }, [onListRef, listRef]);
 
-  // Initial scroll to bottom when component mounts
+  // This effect triggers a layout recalculation after the initial mount,
+  // which fixes the initial "messed up" layout.
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (listRef.current) {
+        listRef.current.resetAfterIndex(0);
+      }
+    }, 100); // Delay to allow initial rows to measure themselves.
+
+    return () => clearTimeout(timer);
+  }, []); // Run only once on mount.
+
   React.useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollToItem(conversationTurns.length - 1, "end");
     }
-  }, []); // Empty dependency array to run only on mount
+  }, [conversationTurns.length]);
+
+  const getItemSize = index => {
+    return itemHeightsRef.current.get(index) || 250;
+  };
 
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
       {listWidth > 0 && listHeight > 0 && (
-                  <List
-                    ref={listRef}
-                    height={listHeight}
-                    width={listWidth}
-                    itemCount={conversationTurns.length}
-                    itemSize={getItemSize}
-                    estimatedItemSize={250}
-                    overscanCount={10}
-                    itemData={{ conversationTurns, expandThinking, itemHeightsRef, listRef, isScrolling: isScrollingWithDelay, animationsEnabled, expandedThoughtIds, toggleThoughtExpanded }} // Pass animationsEnabled, expandedThoughtIds, toggleThoughtExpanded
-                    onScroll={handleListScroll}
-                    onItemsRendered={({ visibleStopIndex }) => {
-                      // Update isUserAtBottom based on visible items
-                      setIsUserAtBottom(visibleStopIndex === conversationTurns.length - 1);
-                    }}
+        <List
+          ref={listRef}
+          height={listHeight}
+          width={listWidth}
+          itemCount={conversationTurns.length}
+          itemSize={getItemSize}
+          estimatedItemSize={250}
+          overscanCount={10}
+          itemData={{ conversationTurns, expandThinking, itemHeightsRef, listRef, isScrolling: isScrollingWithDelay, animationsEnabled: effectiveAnimationsEnabled, expandedThoughtIds, toggleThoughtExpanded, pendingScrollToIndex }}
+          onScroll={handleListScroll}
+          onItemsRendered={({ visibleStartIndex, visibleStopIndex }) => {
+            // Update isUserAtBottom based on visible items
+            setIsUserAtBottom(visibleStopIndex === conversationTurns.length - 1);
+
+            // Check if there's a pending scroll to an index
+            if (pendingScrollToIndex && pendingScrollToIndex.current !== null) {
+              const targetIndex = pendingScrollToIndex.current;
+              // If the target index is now visible, perform the final scroll
+              if (targetIndex >= visibleStartIndex && targetIndex <= visibleStopIndex) {
+                listRef.current.scrollToItem(targetIndex, "start");
+                // Introduce a small delay to allow layout to settle, then re-scroll for precision
+                setTimeout(() => {
+                  // Only re-scroll if the pending index hasn't changed (i.e., no new click during delay)
+                  if (pendingScrollToIndex.current === targetIndex) {
+                    listRef.current.scrollToItem(targetIndex, "start");
+                    pendingScrollToIndex.current = null; // Clear the pending index after final scroll
+                  }
+                }, 50); // 50ms delay
+              }
+            }
+          }}
         >
-          {({ index, style, data }) => (
-            <Row index={index} style={style} data={data} />
-          )}
+          {Row}
         </List>
       )}
     </div>
