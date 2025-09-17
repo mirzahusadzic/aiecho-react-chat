@@ -41,7 +41,7 @@ function Bubble({ role, html, id, isScrolling: isScrollingWithDelay, isThought, 
     return `tremble-fast 1s infinite ease-in-out ${finalTrembleDelay}s`;
   }, [trembleDelayOffset]);
 
-  const avatar = role === "user" ? "𖤓" : "۝";
+  const avatar = role === "user" ? "ִֶָ🐇" : "♊︎";
   const containerClass = role === "user" ? "chat-container user-pulls merge" : "chat-container gemini-pulls merge";
   const bubbleClass = role === "user" ? "bubble user-bubble" : "bubble gemini-bubble";
 
@@ -52,7 +52,7 @@ function Bubble({ role, html, id, isScrolling: isScrollingWithDelay, isThought, 
             <div className={`${bubbleClass} ${animationsEnabled ? '' : 'animation-paused'}`} style={{ "--rand": rand, animation: slideAnimation }}>
               {isThought ? (
                 <div className="collapsible-thought">
-                  <div className="collapsible-summary" onClick={() => toggleThoughtExpanded(id)}>۩</div>
+                  <div className="collapsible-summary" onClick={() => toggleThoughtExpanded(id)}>🏻‎🏼‎🏽‎🏾🏿</div>
                   {(isThoughtExpanded || expandThinking) && (
                     <div className={`part-box ${animationsEnabled ? '' : 'animation-paused'}`} dangerouslySetInnerHTML={{ __html: html }} />
                   )}

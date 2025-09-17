@@ -14,9 +14,9 @@ export default function App() {
 
   useEffect(() => {
     // Load default JSON on initial mount
-    loadChatJSON('/How_Can_I_Help_You.json')
-       .then(setChunks)
-       .catch(err => console.error('Failed to load chat JSON', err));
+    // loadChatJSON('/How_Can_I_Help_You.json')
+    //   .then(setChunks)
+    //   .catch(err => console.error('Failed to load chat JSON', err));
 
     // Handle initial URL hash for scrolling
     const handleInitialHashScroll = () => {

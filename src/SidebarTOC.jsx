@@ -75,22 +75,28 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
     <section data-testid="stSidebar" className={`${isSidebarOpen ? '' : 'closed'} ${animationsPaused ? 'animations-paused' : ''}`}> {/* Apply 'closed' class */}
       <div> {/* This div will be the :first-child targeted by CSS */}
         <label className="sidebar-control-label">
+          <span className="switch-label">Show Thoughts</span>
           <input
             type="checkbox"
             checked={expandThinking}
             onChange={e => setExpandThinking(e.target.checked)}
             className="sidebar-checkbox"
           />
-          Show Thoughts
+          <span className="switch-container">
+            <span className="switch-handle"></span>
+          </span>
         </label>
         <label className="sidebar-control-label">
+          <span className="switch-label">Pause Animations</span>
           <input
             type="checkbox"
             checked={animationsPaused}
             onChange={e => setAnimationsPaused(e.target.checked)}
             className="sidebar-checkbox"
           />
-          Pause Animations
+          <span className="switch-container">
+            <span className="switch-handle"></span>
+          </span>
         </label>
         <div className="sidebar-controls"> {/* New wrapper for sticky elements */}
           <div className="sidebar-control-group">
