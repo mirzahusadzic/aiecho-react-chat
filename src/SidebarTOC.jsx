@@ -18,7 +18,7 @@ function getPlainTextFromMarkdown(markdownText) {
   }
 }
 
-export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex, expandThinking, setExpandThinking, animationsPaused, setAnimationsPaused, setChunks }) {
+export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap, pendingScrollToIndex, expandThinking, setExpandThinking, animationsPaused, setAnimationsPaused, setChunks, setFileName, fileName }) {
   const handleTocClick = React.useCallback((e, originalIndex) => {
     e.preventDefault();
     if (chatListRef && chatListRef.current) {
@@ -45,6 +45,8 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      const fileNameWithoutExtension = file.name.split('.').slice(0, -1).join('.');
+      setFileName(fileNameWithoutExtension); // Update the file name in App.jsx state
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
@@ -91,23 +93,25 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
           />
           Pause Animations
         </label>
-        <div className="sidebar-control-group">
-          <button
-            onClick={handleButtonClick}
-            className="sidebar-button"
-          >
-            Choose JSON File
-          </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-            accept=".json"
-          />
-        </div>
-        <h3>⚕ User Messages</h3>
-        <nav>
+        <div className="sidebar-controls"> {/* New wrapper for sticky elements */}
+          <div className="sidebar-control-group">
+            <button
+              onClick={handleButtonClick}
+              className={`sidebar-button ${fileName ? 'sidebar-button-selected' : ''}`}
+            >
+              Choose JSON File
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              accept=".json"
+            />
+          </div>
+          <h3 className="sidebar-title">⚕ User Messages</h3>
+        </div> {/* End sidebar-controls */}
+        <nav className="sidebar-nav-scrollable"> {/* New class for scrollable nav */}
           {chunks.map((chunk, i) => {
             if (chunk.role?.toLowerCase() === 'user') {
               const validIndex = originalIndexToValidIndexMap[i];

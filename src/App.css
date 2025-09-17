@@ -1,8 +1,9 @@
 /* ===== Base page ===== */
 body { 
-    background-color: #0a0a0a; 
-    color: #e0e0e0; 
+    background-color: #0A1014; 
+    color: #c9d1d9; 
     font-family: 'Fira Code', monospace; 
+    text-shadow: 0 0 2px rgba(201, 209, 217, 0.1); /* Subtle off-white glow */
 }
 
 /* ===== Avatars ===== */
@@ -21,33 +22,32 @@ body {
 }
 
 @keyframes avatarBlend {
-    0% { box-shadow: 0 0 5px rgba(150,50,150,0.1); }
-    50% { box-shadow: 0 0 8px rgba(180,70,180,0.2); }
-    100% { box-shadow: 0 0 5px rgba(150,50,150,0.1); }
+    0% { box-shadow: 0 0 5px rgba(255, 105, 180, 0.1); } /* Gemini Pink */
+    50% { box-shadow: 0 0 8px rgba(216, 129, 17, 0.2); } /* User Orange */
+    100% { box-shadow: 0 0 5px rgba(255, 105, 180, 0.1); } /* Gemini Pink */
 }
 
-.user-avatar { background-color: rgba(50,50,50,0.1); color: #a0a0a0; }
-.gemini-avatar { background-color: rgba(80,40,40,0.1); color: #cc5555; }
-.gemini-thinking-avatar { background-color: rgba(40,80,40,0.1); color: #55cc55; }
+.user-avatar { background-color: rgba(50,50,50,0.1); color: #D88111; }
+.gemini-avatar { background-color: rgba(80,40,40,0.1); color: #00BFFF; }
+.gemini-thinking-avatar { background-color: rgba(40,80,40,0.1); color: #FF69B4; }
 
 /* ===== Bubbles ===== */
 .bubble {
     padding: 18px 22px;
-    border-radius: 20px;
+    border-radius: 8px 2px 8px 2px;
     line-height: 1.8;
     word-wrap: break-word;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: center;
-    max-width: 75%;
+    max-width: 85%;
     min-width: 150px;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    font-weight: 600;
     transform: translateZ(0);
     backface-visibility: hidden;
     
-    background-color: rgba(15, 15, 18, 0.9);
+    background-color: rgba(22, 27, 34, 0.8);
 
     /* --- The Masking Effect --- */
     -webkit-mask-image: 
@@ -70,31 +70,29 @@ body {
     max-width: 75%;
     text-align: left;
     white-space: normal;
-    color: #e0e0e0; /* Default solid text color */
+    color: #c9d1d9; /* Default solid text color */
+    font-family: 'Roboto', sans-serif; /* Changed font for readability */
+    font-weight: 400;
 }
 
 /* User and Gemini bubbles */
 .user-bubble {
-    font-size: 1.0em;
+    font-size: 1.21em;
 }
 
 .gemini-bubble {
-    font-size: 1.1em;
+    font-size: 1.21em;
 }
 
 .bubble.gemini-thinking-bubble {
     font-size: 1.0em;
     color: #99ff99;
-    border: 1px dashed rgba(153, 255, 153, 0.3);
+    border: 1px dashed rgba(0, 191, 255, 0.3); /* Subtle neon blue border */
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
-.user-bubble .bubble-inner {
-    color: #d4c0a4;
-}
-
-.gemini-bubble .bubble-inner {
-    color: #ffbbbb;
-}
+/* User and Gemini bubbles */
 
 /* --- KEYFRAMES --- */
 
@@ -143,19 +141,19 @@ body {
 
 /* Gemini pulse text effect */
 @keyframes geminiPulse {
-    0% { text-shadow: 0 0 0.75px #ff9999, 0 0 1.5px #ff6666; }
-    25% { text-shadow: 0 0 3px #ffbbaa, 0 0 6px #ff8888; }
-    50% { text-shadow: 0 0 0.75px #ff9999, 0 0 1.5px #ff6666; }
+    0% { text-shadow: 0 0 0.75px #FF69B4, 0 0 1.5px #FF1493; }
+    25% { text-shadow: 0 0 3px #FFC0CB, 0 0 6px #FF69B4; }
+    50% { text-shadow: 0 0 0.75px #FF69B4, 0 0 1.5px #FF1493; }
 }
 
 /* Inline code inside Gemini bubbles */
 .gemini-bubble code {
-    background: rgba(20,20,25,0.8);
-    color: #e0e0e0;
+    background: #161b22;
+    color: #00BFFF;
     padding: 2px 4px;
     border-radius: 4px;
     background-clip: border-box;
-    -webkit-text-fill-color: #e0e0e0;
+    -webkit-text-fill-color: #00BFFF;
 }
 
 .gemini-bubble code::selection {
@@ -163,11 +161,19 @@ body {
     color: #e0e0e0;
 }
 
+.file-name-display {
+  color: #8A2B04; /* Less dark red */
+  -webkit-text-fill-color: initial; /* Override transparent fill */
+  background-clip: initial; /* Override text clipping */
+  -webkit-background-clip: initial; /* Override text clipping */
+  text-shadow: none; /* Remove text shadow */
+}
+
 /* User pulse text effect */
 @keyframes userPulse {
-    0% { text-shadow: 0 0 0.75px rgba(100, 100, 255, 0.5), 0 0 1.5px rgba(50, 50, 200, 0.5); }
-    25% { text-shadow: 0 0 3px rgba(150, 150, 255, 0.8), 0 0 6px rgba(100, 100, 255, 0.8); }
-    50% { text-shadow: 0 0 0.75px rgba(100, 100, 255, 0.5), 0 0 1.5px rgba(50, 50, 200, 0.5); }
+    0% { text-shadow: 0 0 0.75px #D88111, 0 0 1.5px #8A2B04; }
+    25% { text-shadow: 0 0 3px #FFD700, 0 0 6px #D88111; }
+    50% { text-shadow: 0 0 0.75px #D88111, 0 0 1.5px #8A2B04; }
 }
 
 .animation-paused {
@@ -185,9 +191,9 @@ section[data-testid="stSidebar"].animations-paused a {
 .chat-container { 
     width: 100%;
     display: flex; 
-    margin: 12px 0; 
+    margin: 16px 0; 
     align-items: flex-start !important; 
-    padding: 5px;
+    padding: 15px;
     border-radius: 25px; 
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.02); 
     overflow: hidden; 
@@ -224,25 +230,27 @@ section[data-testid="stSidebar"].animations-paused a {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 25px; 
-    background-color: rgba(0,0,0,0.1);
+    margin-bottom: 24px;
     overflow: hidden;
+    border-radius: 25px; 
+    background-color:#0d1117;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(48, 64, 80, 0.3); /* Subtle blue-grey glow */
 }
 section[data-testid="stSidebar"] {
-    background-color: #121217; /* dark futuristic panel */
-    color: #606060 !important; 
+    background-color: rgba(22, 27, 34, 0.9); /* darker but not too much */
+    color: #c9d1d9 !important; 
     font-size: 1.0em; 
     font-family: 'Source Code Pro', monospace !important;
     height: 100%; /* Added to ensure it takes full height of flex container */
     flex-basis: 300px; /* Use flex-basis instead of width for initial size */
     flex-shrink: 0; /* Prevent the sidebar from shrinking */
     max-width: 300px; /* Prevent it from getting too wide */
-    overflow: hidden; /* Add this to contain content within the section */
+    overflow-y: auto; /* Allow vertical scrolling */
     position: relative; /* Added for absolute positioning of the button */
     transition: all 0.3s ease-in-out; /* Smooth transition for width */
+    border-right: 3px solid #304050;
+    box-shadow: 5px 0 15px rgba(48, 64, 80, 0.4); /* Subtle blue-grey glow on the right */
 }
 
 @media (max-width: 768px) {
@@ -254,25 +262,45 @@ section[data-testid="stSidebar"] {
 }
 
 section[data-testid="stSidebar"] a {
-    color: #707880;
-    text-decoration: none;
+    color: #66CCFF; /* Punched towards neon blue */
+    text-decoration: none; /* Ensure no underline by default */
     font-size: 1.0em;
     display: block;
-    margin-bottom: 6px;
-    font-family: 'Source Code Pro', monospace !important;
+    margin-bottom: 4px;
+    padding: 0 10px 8px 10px; /* Remove top padding */
+    border-radius: 6px; /* Slightly rounded corners */
+    font-family: 'Inter', sans-serif !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
     animation: tocGlitchCycle 15s linear infinite;
 }
 
 section[data-testid="stSidebar"] a:hover {
-    text-decoration: underline;
-    color: #9098a0;
+    text-decoration: none; /* Explicitly remove underline on hover */
+    color: #c9d1d9;
+    background-color: rgba(255, 255, 255, 0.1); /* Added hover background */
+    text-shadow: 0 0 5px rgba(0, 191, 255, 0.5); /* Neon blue glow */
 }
 
 section[data-testid="stSidebar"] > div:first-child {
     position: sticky;
     top: 12px;
-    max-height: 90vh;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 12px); /* Adjust height to account for top offset */
+}
+
+.sidebar-controls {
+  flex-shrink: 0; /* Prevent shrinking */
+  padding: 15px 0; /* Keep vertical padding, remove horizontal */
+}
+
+.sidebar-nav-scrollable {
+  flex-grow: 1; /* Take up remaining space */
+  overflow-y: auto; /* Make it scrollable */
+  padding: 0 0 15px 0; /* Keep bottom padding, remove horizontal */
 }
 
 /* Styles for the sidebar toggle button */
@@ -314,7 +342,7 @@ section[data-testid="stSidebar"].closed {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    color: #b0b0b0;
+    color: #8b949e;
     font-size: 0.9em;
     cursor: pointer;
 }
@@ -330,21 +358,46 @@ section[data-testid="stSidebar"].closed {
 }
 
 .sidebar-button {
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #555;
+    background-color: #00BFFF; /* Neon blue tint */
+    color: #0A1014; /* Dark text for contrast */
+    border: 1px solid #00BFFF;
     padding: 8px 12px;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 0.9em;
     width: 100%; /* Make button full width of sidebar */
     text-align: center;
-    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 0 8px rgba(0, 191, 255, 0.6); /* Neon blue glow */
 }
 
 .sidebar-button:hover {
-    background-color: #555;
-    border-color: #777;
+    background-color: #00FFFF; /* Lighter neon blue on hover */
+    border-color: #00FFFF;
+    box-shadow: 0 0 12px rgba(0, 191, 255, 0.8); /* Stronger neon blue glow on hover */
+}
+
+.sidebar-button-selected {
+    background-color: #6B2000; /* Deeper red-brown */
+    color: #00BFFF; /* Neon blue font */
+    border: 1px solid #6B2000;
+    box-shadow: 0 0 8px rgba(107, 32, 0, 0.6); /* Deeper glow */
+}
+
+.sidebar-button-selected:hover {
+    background-color: #D88111; /* Lighter orange on hover */
+    border-color: #D88111;
+    box-shadow: 0 0 12px rgba(107, 32, 0, 0.8); /* Stronger glow on hover */
+}
+
+.sidebar-title {
+  color: #00BFFF; /* Neon blue tint */
+  text-shadow: 0 0 6px rgba(0, 191, 255, 0.6); /* Neon blue glow */
+  font-size: 1.2em;
+  padding: 8px 0;
+  margin-bottom: 0;
+  text-align: center;
+  border-bottom: 2px solid rgba(0, 191, 255, 0.2); /* Subtle neon blue underline */
 }
 
 /* TOC Glitch Cycle Animation */
@@ -395,10 +448,10 @@ section[data-testid="stSidebar"].closed {
     border-collapse: collapse;
     font-size: 0.85em;
     width: 100%; /* Changed from auto to 100% */
-    background-color: rgba(40,20,20,0.6); 
+    background-color: #161b22; 
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 0 6px rgba(255,120,120,0.15);
+    box-shadow: 0 0 6px rgba(255,120,120,0.05);
     table-layout: fixed;        
     min-width: 400px;           
 }
@@ -416,24 +469,24 @@ section[data-testid="stSidebar"].closed {
     font-weight: bold;
     white-space: nowrap;
     text-align: right;
-    color: #ff9999; 
-    min-width: 110px;
+    color: #8b949e; 
+    min-width: 150px;
 }
 
-.grounding-table tr td:last-child { text-align: left; width: 100%; } /* Changed from auto to 100% */
+.grounding-table tr td:last-child { text-align: left; width: auto; }
 
 .grounding-table a.grounding-link {
     text-decoration: none;
-    color: #ffbbbb;
-    background: rgba(255,100,100,0.15);
+    color: #D88111; /* User orange */
+    background: rgba(22, 27, 34, 0.3); /* Subtle dark background */
     padding: 2px 6px;
     border-radius: 6px;
     transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .grounding-table a.grounding-link:hover {
-    background: rgba(255,120,120,0.3);
-    color: #fff;
+    background: rgba(22, 27, 34, 0.6); /* More opaque dark background */
+    color: #FFD700; /* Gold/yellow on hover */
 }
 
 /* Styling for markdown tables */
@@ -448,13 +501,13 @@ table:not(.grounding-table) {
 
 table:not(.grounding-table) thead {
     background-color: transparent; /* Inherit from parent */
-    box-shadow: inset 0 0 0 1000px rgba(255, 255, 255, 0.03); /* 3% lighter overlay */
+    box-shadow: inset 0 0 0 1000px rgba(255, 255, 255, 0.05); /* 5% lighter overlay */
     font-weight: bold;
 }
 
 table:not(.grounding-table) th,
 table:not(.grounding-table) td {
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #30363d;
     padding: 0.75em;
     text-align: left;
 }
@@ -466,9 +519,9 @@ table:not(.grounding-table) td {
     -webkit-text-fill-color: transparent;
     padding: 10px; 
     border-left: 3px solid rgba(255, 119, 119, 0.1); 
-    margin: 4px 0 4px 72px; 
-    line-height: 1.7;
+    margin: 4px 0 4px 72px;
     animation: thinkingPulse 30s infinite alternate-reverse ease-out, signalGlitchCycle 0.2s linear infinite;
+    line-height: 1.7;
 }
 
 /* Gemini pulse text effect */
@@ -567,7 +620,7 @@ table:not(.grounding-table) td {
 .main-content {
   flex-grow: 1; /* Main content takes remaining space */
   overflow-y: auto; /* Make main content scrollable */
-  padding: 20px;
+  padding: 0 20px;
   width: 100%; /* Ensure main-content takes full width */
   height: 100%; /* Explicitly set height to 100% */
   scroll-behavior: auto !important; /* Ensure instant scrolling */
@@ -578,5 +631,15 @@ table:not(.grounding-table) td {
   width: 100% !important;
 }
 
-
-
+.app-header-title {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color:  rgba(0, 191, 255, 1);
+  text-shadow: 0 0 8px rgba(0, 191, 255, 0.8), 0 0 8px rgba(216, 129, 17, 0.8); /* Neon blue glow, and orange glow around letters */
+  font-size: 1.5em;
+  padding: 0;
+  margin-bottom: 0;
+  text-align: left;
+  border-bottom: 2px solid rgba(0, 191, 255, 0.5); /* Subtle neon blue underline */
+  background: none !important;
+}

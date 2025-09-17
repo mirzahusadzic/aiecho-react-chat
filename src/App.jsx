@@ -10,6 +10,7 @@ export default function App() {
   const [animationsPaused, setAnimationsPaused] = useState(true); // New state for animations
   const [chatListRef, setChatListRef] = useState(null);
   const pendingScrollToIndex = useRef(null);
+  const [fileName, setFileName] = useState(''); // New state for file name
 
   useEffect(() => {
     // Load default JSON on initial mount
@@ -78,8 +79,13 @@ export default function App() {
         animationsPaused={animationsPaused}
         setAnimationsPaused={setAnimationsPaused}
         setChunks={setChunks} // Pass setChunks to SidebarTOC
+        setFileName={setFileName} // Pass setFileName to SidebarTOC
+        fileName={fileName} // Pass fileName to SidebarTOC
       />
       <div className={`main-content ${isSidebarOpen ? '' : 'sidebar-closed'}`}> {/* Apply ref and class */}
+        <div className="app-header-title">
+          The Architect in the Echo:{fileName ? <span className="file-name-display"> {fileName}</span> : ''}
+        </div>
         {conversationTurns.length > 0 ? (
           <ChatRenderer
             key={conversationTurns.length} // Force re-mount on data change

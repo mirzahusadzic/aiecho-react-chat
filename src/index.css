@@ -9,7 +9,7 @@
 body, html, #root {
     height: 100%;
     font-family: 'Fira Code', monospace;
-    background-color: #0f0f12; /* fallback if App.css gradient fails */
+    background-color: #0A1014; /* Blade Runner main background */
     color: #e0e0e0;
     overflow: hidden; /* Changed from overflow-x: hidden */
 }
