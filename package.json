@@ -1,7 +1,7 @@
 {
   "name": "aiecho-react-chat",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -20,6 +20,9 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",
     "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
     "vite": "^7.1.2"
   }
 }
