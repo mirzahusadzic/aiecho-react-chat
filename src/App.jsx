@@ -10,12 +10,17 @@ export default function App() {
   const [animationsPaused, setAnimationsPaused] = useState(true); // New state for animations
   const [chatListRef, setChatListRef] = useState(null);
   const pendingScrollToIndex = React.useRef(null);
+  const [jsonFilePath, setJsonFilePath] = useState('/How_Can_I_Help_You.json'); // New state for JSON file path
 
-  useEffect(() => {
-    loadChatJSON('/How_Can_I_Help_You.json')
+  const handleLoadJson = () => {
+    loadChatJSON(jsonFilePath)
       .then(setChunks)
       .catch(err => console.error('Failed to load chat JSON', err));
-  }, []);
+  };
+
+  useEffect(() => {
+    handleLoadJson(); // Load initial JSON or when path changes
+  }, [jsonFilePath]); // Depend on jsonFilePath
 
   const { conversationTurns, originalIndexToTurnIndexMap } = useMemo(() => {
     const validChunks = chunks.filter(chunk => chunk?.role);
@@ -75,6 +80,16 @@ export default function App() {
         setAnimationsPaused={setAnimationsPaused}
       />
       <div className={`main-content ${isSidebarOpen ? '' : 'sidebar-closed'}`}> {/* Apply ref and class */}
+        <div style={{ marginBottom: '1em' }}>
+          <input
+            type="text"
+            value={jsonFilePath}
+            onChange={(e) => setJsonFilePath(e.target.value)}
+            placeholder="Enter JSON file path (e.g., /path/to/file.json)"
+            style={{ width: '300px', marginRight: '10px', padding: '5px' }}
+          />
+          <button onClick={handleLoadJson} style={{ padding: '5px 10px' }}>Load JSON</button>
+        </div>
 
         {conversationTurns.length > 0 ? (
           <ChatRenderer
