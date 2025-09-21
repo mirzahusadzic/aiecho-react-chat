@@ -9,7 +9,7 @@ export async function loadChatJSON(filePath) {
     const chunks = data?.chunkedPrompt?.chunks || [];
 
     // Prune any chunks with errors
-    const validChunks = chunks.filter(chunk => !chunk.errorMessage);
+    const validChunks = chunks.filter((chunk) => !chunk.errorMessage);
 
     if (validChunks.length === 0) {
       console.warn("No valid chat chunks found in the JSON file.");

@@ -1,9 +1,9 @@
 import React from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import { VariableSizeList as List} from "react-window";
-import useResizeObserver from '@react-hook/resize-observer';
-import './App.css';   // chat-specific
+import { VariableSizeList as List } from "react-window";
+import useResizeObserver from "@react-hook/resize-observer";
+import "./App.css"; // chat-specific
 
 // Convert markdown → sanitized HTML
 function safeChunkBody(text) {
@@ -16,52 +16,49 @@ function safeChunkBody(text) {
   }
 }
 
-// Random helper
-const randBetween = (min, max) => Math.random() * (max - min) + min;
-
 // User / Gemini bubble component
-function Bubble({ role, html, id, isScrolling: isScrollingWithDelay, isThought, expandThinking, animationsEnabled, expandedThoughtIds, toggleThoughtExpanded }) {
+function Bubble({
+  role,
+  html,
+  id,
+  isThought,
+  expandThinking,
+  expandedThoughtIds,
+  toggleThoughtExpanded,
+}) {
   const isThoughtExpanded = expandedThoughtIds.has(id);
-
-  const animationValues = React.useRef({
-    rand: randBetween(0.3, 0.7),
-    trembleDelayOffset: randBetween(0, 0.5),
-    trembleDurationFactor: randBetween(0.8, 1.2),
-  });
-  const { rand, trembleDelayOffset, trembleDurationFactor } = animationValues.current;
-
-  const slideAnimation = React.useMemo(() => {
-    const finalTrembleDuration = 40.0 * trembleDurationFactor;
-    const finalTrembleDelay = 1.5 + trembleDelayOffset;
-    return `slide-x-${role} ${finalTrembleDuration}s infinite cubic-bezier(0.8,0,0.2,1) ${finalTrembleDelay}s backwards, move-noise 10s steps(10,end) infinite, geminiPulse 10s infinite alternate ease-in-out`;
-  }, [role, trembleDurationFactor, trembleDelayOffset]);
-
-  const trembleAnimation = React.useMemo(() => {
-    const finalTrembleDelay = 1.5 + trembleDelayOffset;
-    return `tremble-fast 1s infinite ease-in-out ${finalTrembleDelay}s`;
-  }, [trembleDelayOffset]);
-
   const avatar = role === "user" ? "ִֶָ🐇" : "♊︎";
-  const containerClass = role === "user" ? "chat-container user-pulls merge" : "chat-container gemini-pulls merge";
-  const bubbleClass = role === "user" ? "bubble user-bubble" : "bubble gemini-bubble";
+  const bubbleClass =
+    role === "user" ? "bubble user-bubble" : "bubble gemini-bubble";
 
   return (
-    <div className={containerClass} id={id}>
-      <div className={`${role}-avatar avatar ${animationsEnabled ? '' : 'animation-paused'}`}>{avatar}</div>
-          <div className="bubble-tremble-wrapper">
-            <div className={`${bubbleClass} ${animationsEnabled ? '' : 'animation-paused'}`} style={{ "--rand": rand, animation: slideAnimation }}>
-              {isThought ? (
-                <div className="collapsible-thought">
-                  <div className="collapsible-summary" onClick={() => toggleThoughtExpanded(id)}>🏻‎🏼‎🏽‎🏾🏿</div>
-                  {(isThoughtExpanded || expandThinking) && (
-                    <div className={`part-box ${animationsEnabled ? '' : 'animation-paused'}`} dangerouslySetInnerHTML={{ __html: html }} />
-                  )}
-                </div>
-              ) : (
-                <div className="bubble-inner" style={{ animation: animationsEnabled ? trembleAnimation : 'none' }} dangerouslySetInnerHTML={{ __html: html }} />
+    <div className="chat-container" id={id}>
+      <div className={`${role}-avatar avatar`}>{avatar}</div>
+      <div className="bubble-tremble-wrapper">
+        <div className={`${bubbleClass}`}>
+          {isThought ? (
+            <div className="collapsible-thought">
+              <div
+                className="collapsible-summary"
+                onClick={() => toggleThoughtExpanded(id)}
+              >
+                🏻‎🏼‎🏽‎🏾🏿
+              </div>
+              {(isThoughtExpanded || expandThinking) && (
+                <div
+                  className="part-box"
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
               )}
             </div>
-          </div>
+          ) : (
+            <div
+              className="bubble-inner"
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -71,12 +68,16 @@ function GroundingTable({ grounding, rowIndex }) {
   if (!grounding) return null;
   const rows = [];
 
-  grounding.groundingSources?.forEach(src => {
+  grounding.groundingSources?.forEach((src) => {
     rows.push(
       <tr key={`src-${rowIndex}-${src.referenceNumber}`}>
         <td>[source {src.referenceNumber}]</td>
-        <td><a className="grounding-link" href={src.uri} target="_blank">{src.title}</a></td>
-      </tr>
+        <td>
+          <a className="grounding-link" href={src.uri} target="_blank">
+            {src.title}
+          </a>
+        </td>
+      </tr>,
     );
   });
 
@@ -84,8 +85,12 @@ function GroundingTable({ grounding, rowIndex }) {
     rows.push(
       <tr key={`seg-${rowIndex}-${idx}`}>
         <td>[corroboration {seg.index}]</td>
-        <td><a className="grounding-link" href={seg.uri} target="_blank">{seg.uri}</a></td>
-      </tr>
+        <td>
+          <a className="grounding-link" href={seg.uri} target="_blank">
+            {seg.uri}
+          </a>
+        </td>
+      </tr>,
     );
   });
 
@@ -94,17 +99,28 @@ function GroundingTable({ grounding, rowIndex }) {
       <tr key={`web-${rowIndex}-${idx}`}>
         <td>[web search {idx + 1}]</td>
         <td>{q}</td>
-      </tr>
+      </tr>,
     );
   });
 
   if (!rows.length) return null;
-  return <table className="grounding-table"><tbody>{rows}</tbody></table>;
+  return (
+    <table className="grounding-table">
+      <tbody>{rows}</tbody>
+    </table>
+  );
 }
 
 // Row component for react-window
 const Row = ({ index, style, data }) => {
-  const { conversationTurns, expandThinking, itemHeightsRef, listRef, isScrolling: isUserScrolling, animationsEnabled, expandedThoughtIds, toggleThoughtExpanded } = data;
+  const {
+    conversationTurns,
+    expandThinking,
+    itemHeightsRef,
+    listRef,
+    expandedThoughtIds,
+    toggleThoughtExpanded,
+  } = data;
   const turn = conversationTurns[index];
   const rowRef = React.useRef(null);
 
@@ -127,24 +143,29 @@ const Row = ({ index, style, data }) => {
     observer.observe(rowRef.current);
 
     return () => observer.disconnect();
-  }, [index, turn, expandThinking, expandedThoughtIds, listRef, itemHeightsRef]);
+  }, [
+    index,
+    turn,
+    expandThinking,
+    expandedThoughtIds,
+    listRef,
+    itemHeightsRef,
+  ]);
 
   if (!turn) return null;
 
   const id = `msg${index}`;
 
   return (
-    <div style={style}> 
+    <div style={style}>
       <div ref={rowRef} className="chat-pair-container" id={id}>
         {turn.userMessage && (
           <Bubble
             role="user"
             html={safeChunkBody(turn.userMessage.text)}
             id={`user-${id}`}
-            isScrolling={isUserScrolling}
             isThought={false}
             expandThinking={expandThinking}
-            animationsEnabled={animationsEnabled}
             expandedThoughtIds={expandedThoughtIds}
             toggleThoughtExpanded={toggleThoughtExpanded}
           />
@@ -152,12 +173,12 @@ const Row = ({ index, style, data }) => {
         {turn.thinkingMessage && (
           <Bubble
             role="gemini-thinking"
-            html={safeChunkBody(turn.thinkingMessage.parts?.map(p => p.text).join("" ) || "")}
+            html={safeChunkBody(
+              turn.thinkingMessage.parts?.map((p) => p.text).join("") || "",
+            )}
             id={`gemini-thought-${id}`}
-            isScrolling={isUserScrolling}
             isThought={true}
             expandThinking={expandThinking}
-            animationsEnabled={animationsEnabled}
             expandedThoughtIds={expandedThoughtIds}
             toggleThoughtExpanded={toggleThoughtExpanded}
           />
@@ -166,13 +187,13 @@ const Row = ({ index, style, data }) => {
           <Bubble
             role="gemini"
             html={safeChunkBody(
-              turn.geminiMessage.text || turn.geminiMessage.parts?.map(p => p.text).join("" ) || ""
+              turn.geminiMessage.text ||
+                turn.geminiMessage.parts?.map((p) => p.text).join("") ||
+                "",
             )}
             id={`gemini-model-${id}`}
-            isScrolling={isUserScrolling}
             isThought={false}
             expandThinking={expandThinking}
-            animationsEnabled={animationsEnabled}
             expandedThoughtIds={expandedThoughtIds}
             toggleThoughtExpanded={toggleThoughtExpanded}
           />
@@ -186,7 +207,13 @@ const Row = ({ index, style, data }) => {
 };
 
 // Main chat renderer
-export default function ChatRenderer({ conversationTurns, expandThinking, onListRef, scrollTargetIndex, onScrollComplete, animationsEnabled: propAnimationsEnabled }) {
+export default function ChatRenderer({
+  conversationTurns,
+  expandThinking,
+  onListRef,
+  scrollTargetIndex,
+  onScrollComplete,
+}) {
   const containerRef = React.useRef(null);
   const [listWidth, setListWidth] = React.useState(0);
   const [listHeight, setListHeight] = React.useState(0);
@@ -197,11 +224,8 @@ export default function ChatRenderer({ conversationTurns, expandThinking, onList
   const listRef = React.useRef(null);
   const itemHeightsRef = React.useRef(new Map());
 
-  // Calculate effective animationsEnabled by combining prop and scrolling state
-  const effectiveAnimationsEnabled = propAnimationsEnabled && !isScrollingWithDelay;
-
   const toggleThoughtExpanded = React.useCallback((id) => {
-    setExpandedThoughtIds(prev => {
+    setExpandedThoughtIds((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
@@ -212,32 +236,38 @@ export default function ChatRenderer({ conversationTurns, expandThinking, onList
     });
   }, []);
 
-  const handleListScroll = React.useCallback(({ scrollOffset }) => {
-    // This is the scroll event from react-window
-    // We need to detect when scrolling stops
-    let lastScrollTop = scrollOffset;
-    let frameId = null;
+  const handleListScroll = React.useCallback(
+    ({ scrollOffset }) => {
+      // This is the scroll event from react-window
+      // We need to detect when scrolling stops
+      let lastScrollTop = scrollOffset;
+      let frameId = null;
 
-    const checkScrollStop = () => {
-      if (listRef.current && listRef.current._outerRef.scrollTop === lastScrollTop) {
-        // Scroll has stopped
-        setIsScrollingWithDelay(false);
-        if (onScrollComplete) {
-          onScrollComplete();
+      const checkScrollStop = () => {
+        if (
+          listRef.current &&
+          listRef.current._outerRef.scrollTop === lastScrollTop
+        ) {
+          // Scroll has stopped
+          setIsScrollingWithDelay(false);
+          if (onScrollComplete) {
+            onScrollComplete();
+          }
+          cancelAnimationFrame(frameId);
+          frameId = null;
+        } else {
+          lastScrollTop = listRef.current._outerRef.scrollTop;
+          frameId = requestAnimationFrame(checkScrollStop);
         }
-        cancelAnimationFrame(frameId);
-        frameId = null;
-      } else {
-        lastScrollTop = listRef.current._outerRef.scrollTop;
+      };
+
+      setIsScrollingWithDelay(true);
+      if (!frameId) {
         frameId = requestAnimationFrame(checkScrollStop);
       }
-    };
-
-    setIsScrollingWithDelay(true);
-    if (!frameId) {
-      frameId = requestAnimationFrame(checkScrollStop);
-    }
-  }, [listRef, setIsScrollingWithDelay]);
+    },
+    [listRef, setIsScrollingWithDelay],
+  );
 
   useResizeObserver(containerRef, (entry) => {
     setListWidth(entry.contentRect.width);
@@ -250,12 +280,12 @@ export default function ChatRenderer({ conversationTurns, expandThinking, onList
 
     const listElement = containerRef.current; // Attach to the main scrollable container
 
-    listElement.addEventListener('scroll', handleListScroll);
-    listElement.addEventListener('wheel', handleListScroll); // Also listen for wheel events
+    listElement.addEventListener("scroll", handleListScroll);
+    listElement.addEventListener("wheel", handleListScroll); // Also listen for wheel events
 
     return () => {
-      listElement.removeEventListener('scroll', handleListScroll);
-      listElement.removeEventListener('wheel', handleListScroll);
+      listElement.removeEventListener("scroll", handleListScroll);
+      listElement.removeEventListener("wheel", handleListScroll);
     };
   }, [containerRef, handleListScroll]); // Dependency on containerRef and handleListScroll
 
@@ -283,12 +313,12 @@ export default function ChatRenderer({ conversationTurns, expandThinking, onList
     }
   }, [conversationTurns.length]);
 
-  const getItemSize = index => {
+  const getItemSize = (index) => {
     return itemHeightsRef.current.get(index) || 250;
   };
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
       {listWidth > 0 && listHeight > 0 && (
         <List
           ref={listRef}
@@ -298,17 +328,30 @@ export default function ChatRenderer({ conversationTurns, expandThinking, onList
           itemSize={getItemSize}
           estimatedItemSize={250}
           overscanCount={10}
-          itemData={{ conversationTurns, expandThinking, itemHeightsRef, listRef, isScrolling: isScrollingWithDelay, animationsEnabled: effectiveAnimationsEnabled, expandedThoughtIds, toggleThoughtExpanded, scrollTargetIndex }}
+          itemData={{
+            conversationTurns,
+            expandThinking,
+            itemHeightsRef,
+            listRef,
+            expandedThoughtIds,
+            toggleThoughtExpanded,
+            scrollTargetIndex,
+          }}
           onScroll={handleListScroll}
           onItemsRendered={({ visibleStartIndex, visibleStopIndex }) => {
             // Update isUserAtBottom based on visible items
-            setIsUserAtBottom(visibleStopIndex === conversationTurns.length - 1);
+            setIsUserAtBottom(
+              visibleStopIndex === conversationTurns.length - 1,
+            );
 
             // Check if there's a pending scroll to an index
             if (scrollTargetIndex !== null) {
               const targetIndex = scrollTargetIndex;
               // If the target index is now visible, perform the final scroll
-              if (targetIndex >= visibleStartIndex && targetIndex <= visibleStopIndex) {
+              if (
+                targetIndex >= visibleStartIndex &&
+                targetIndex <= visibleStopIndex
+              ) {
                 listRef.current.scrollToItem(targetIndex, "start");
                 // Introduce a small delay to allow layout to settle, then re-scroll for precision
                 setTimeout(() => {

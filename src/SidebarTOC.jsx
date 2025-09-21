@@ -1,39 +1,54 @@
-import React, { useRef } from 'react';
-import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+import React, { useRef } from "react";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 // Helper to safely get text content from markdown, similar to your Python example
 function getPlainTextFromMarkdown(markdownText) {
-  if (!markdownText) return '';
+  if (!markdownText) return "";
   try {
     const rawHtml = marked.parse(markdownText);
     const sanitizedHtml = DOMPurify.sanitize(rawHtml);
     // Create a temporary div to extract plain text
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement("div");
     tempDiv.innerHTML = sanitizedHtml;
-    return tempDiv.textContent || tempDiv.innerText || '';
+    return tempDiv.textContent || tempDiv.innerText || "";
   } catch (e) {
     // console.error('Error processing markdown for TOC:', e); // Removed log
     return markdownText; // Fallback to raw text on error
   }
 }
 
-export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatListRef, originalIndexToValidIndexMap, setScrollTargetIndex, expandThinking, setExpandThinking, animationsPaused, setAnimationsPaused, setChunks, setFileName, fileName }) {
-  const handleTocClick = React.useCallback((e, originalIndex) => {
-    e.preventDefault();
-    if (chatListRef) {
-      const validIndex = originalIndexToValidIndexMap[originalIndex];
-      if (validIndex !== undefined) {
-        // Set the scroll target index
-        // We don't directly scroll here, but set the state that App.jsx watches
-        setScrollTargetIndex(validIndex);
+export default function SidebarTOC({
+  chunks,
+  isSidebarOpen,
+  toggleSidebar,
+  chatListRef,
+  originalIndexToValidIndexMap,
+  setScrollTargetIndex,
+  expandThinking,
+  setExpandThinking,
+  setChunks,
+  setFileName,
+  fileName,
+}) {
+  const handleTocClick = React.useCallback(
+    (e, originalIndex) => {
+      e.preventDefault();
+      if (chatListRef) {
+        const validIndex = originalIndexToValidIndexMap[originalIndex];
+        if (validIndex !== undefined) {
+          // Set the scroll target index
+          // We don't directly scroll here, but set the state that App.jsx watches
+          setScrollTargetIndex(validIndex);
+        } else {
+          // console.warn('validIndex is undefined for originalIndex:', originalIndex); // Removed log
+        }
       } else {
-        // console.warn('validIndex is undefined for originalIndex:', originalIndex); // Removed log
+        // console.warn('chatListRef.current is not available.'); // Removed log
       }
-    } else {
-      // console.warn('chatListRef.current is not available.'); // Removed log
-    }
-  }, [chatListRef, originalIndexToValidIndexMap, setScrollTargetIndex]);
+    },
+    [chatListRef, originalIndexToValidIndexMap, setScrollTargetIndex],
+  );
 
   const fileInputRef = useRef(null);
 
@@ -44,7 +59,10 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const fileNameWithoutExtension = file.name.split('.').slice(0, -1).join('.');
+      const fileNameWithoutExtension = file.name
+        .split(".")
+        .slice(0, -1)
+        .join(".");
       setFileName(fileNameWithoutExtension); // Update the file name in App.jsx state
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -59,7 +77,9 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
             setChunks(extractedChunks);
           } else {
             console.error("Error: Extracted chat chunks are not an array.");
-            alert("Error: Selected JSON file does not contain a valid array of chat chunks under 'chunkedPrompt.chunks'.");
+            alert(
+              "Error: Selected JSON file does not contain a valid array of chat chunks under 'chunkedPrompt.chunks'.",
+            );
             setChunks([]); // Clear chunks or handle as appropriate
           }
         } catch (error) {
@@ -72,37 +92,34 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
   };
 
   return (
-    <section data-testid="stSidebar" className={`${isSidebarOpen ? '' : 'closed'} ${animationsPaused ? 'animations-paused' : ''}`}> {/* Apply 'closed' class */}
-      <div> {/* This div will be the :first-child targeted by CSS */}
+    <section
+      data-testid="stSidebar"
+      className={`${isSidebarOpen ? "" : "closed"}`}
+    >
+      {" "}
+      {/* Apply 'closed' class */}
+      <div>
+        {" "}
+        {/* This div will be the :first-child targeted by CSS */}
         <label className="sidebar-control-label">
           <span className="switch-label">Show Thoughts</span>
           <input
             type="checkbox"
             checked={expandThinking}
-            onChange={e => setExpandThinking(e.target.checked)}
+            onChange={(e) => setExpandThinking(e.target.checked)}
             className="sidebar-checkbox"
           />
           <span className="switch-container">
             <span className="switch-handle"></span>
           </span>
         </label>
-        <label className="sidebar-control-label">
-          <span className="switch-label">Pause Animations</span>
-          <input
-            type="checkbox"
-            checked={animationsPaused}
-            onChange={e => setAnimationsPaused(e.target.checked)}
-            className="sidebar-checkbox"
-          />
-          <span className="switch-container">
-            <span className="switch-handle"></span>
-          </span>
-        </label>
-        <div className="sidebar-controls"> {/* New wrapper for sticky elements */}
+        <div className="sidebar-controls">
+          {" "}
+          {/* New wrapper for sticky elements */}
           <div className="sidebar-control-group">
             <button
               onClick={handleButtonClick}
-              className={`sidebar-button ${fileName ? 'sidebar-button-selected' : ''}`}
+              className={`sidebar-button ${fileName ? "sidebar-button-selected" : ""}`}
             >
               Choose JSON File
             </button>
@@ -115,17 +132,25 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
             />
           </div>
           <h3 className="sidebar-title">⚕ User Messages</h3>
-        </div> {/* End sidebar-controls */}
-        <nav className="sidebar-nav-scrollable"> {/* New class for scrollable nav */}
+        </div>{" "}
+        {/* End sidebar-controls */}
+        <nav className="sidebar-nav-scrollable">
+          {" "}
+          {/* New class for scrollable nav */}
           {chunks.map((chunk, i) => {
-            if (chunk.role?.toLowerCase() === 'user') {
+            if (chunk.role?.toLowerCase() === "user") {
               const validIndex = originalIndexToValidIndexMap[i];
               if (validIndex === undefined) return null; // Skip if not a valid item in the virtualized list
               const text = getPlainTextFromMarkdown(chunk.text);
-              const short_preview = text.length > 40 ? text.substring(0, 37) + '...' : text;
+              const short_preview =
+                text.length > 40 ? text.substring(0, 37) + "..." : text;
               const label = `${validIndex + 1}. ${short_preview}`;
               return (
-                <a key={`toc-item-${i}`} href={`#msg${i}`} onClick={(e) => handleTocClick(e, i)}>
+                <a
+                  key={`toc-item-${i}`}
+                  href={`#msg${i}`}
+                  onClick={(e) => handleTocClick(e, i)}
+                >
                   {label}
                 </a>
               );
@@ -135,7 +160,7 @@ export default function SidebarTOC({ chunks, isSidebarOpen, toggleSidebar, chatL
         </nav>
       </div>
       <button onClick={toggleSidebar} className="sidebar-toggle-button">
-        {isSidebarOpen ? '<' : '>'} {/* Simple toggle icon */}
+        {isSidebarOpen ? "<" : ">"} {/* Simple toggle icon */}
       </button>
     </section>
   );

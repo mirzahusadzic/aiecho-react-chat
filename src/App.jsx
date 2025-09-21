@@ -1,16 +1,15 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react';
-import ChatRenderer from './chatRenderer.jsx';
-import SidebarTOC from './SidebarTOC.jsx';
-import { loadChatJSON } from './utils/loadJson.js';
+import React, { useEffect, useState, useMemo, useRef } from "react";
+import ChatRenderer from "./chatRenderer.jsx";
+import SidebarTOC from "./SidebarTOC.jsx";
+import { loadChatJSON } from "./utils/loadJson.js";
 
 export default function App() {
   const [chunks, setChunks] = useState([]);
   const [expandThinking, setExpandThinking] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [animationsPaused, setAnimationsPaused] = useState(true); // New state for animations
   const [chatListRef, setChatListRef] = useState(null);
   const [scrollTargetIndex, setScrollTargetIndex] = useState(null);
-  const [fileName, setFileName] = useState(''); // New state for file name
+  const [fileName, setFileName] = useState(""); // New state for file name
 
   useEffect(() => {
     // Load default JSON on initial mount
@@ -21,21 +20,21 @@ export default function App() {
     // Handle initial URL hash for scrolling
     const handleInitialHashScroll = () => {
       const hash = window.location.hash;
-      if (hash.startsWith('#msg')) {
+      if (hash.startsWith("#msg")) {
         const msgIndex = parseInt(hash.substring(4), 10);
         if (!isNaN(msgIndex)) {
-          setScrollTargetIndex(msgIndex-1);
-          console.log('App.jsx: Initial hash scroll target index:', msgIndex);
+          setScrollTargetIndex(msgIndex - 1);
+          console.log("App.jsx: Initial hash scroll target index:", msgIndex);
         }
       }
     };
 
     handleInitialHashScroll();
 
-    window.addEventListener('hashchange', handleInitialHashScroll);
+    window.addEventListener("hashchange", handleInitialHashScroll);
 
     return () => {
-      window.removeEventListener('hashchange', handleInitialHashScroll);
+      window.removeEventListener("hashchange", handleInitialHashScroll);
     };
   }, []);
 
@@ -43,24 +42,37 @@ export default function App() {
     if (!Array.isArray(chunks)) {
       return { conversationTurns: [], originalIndexToTurnIndexMap: {} };
     }
-    const validChunks = chunks.filter(chunk => chunk?.role);
+    const validChunks = chunks.filter((chunk) => chunk?.role);
     const turns = [];
     const newMap = {};
     let i = 0;
     let turnIndex = 0;
     while (i < validChunks.length) {
-      const turn = { userMessage: null, thinkingMessage: null, geminiMessage: null, grounding: null };
+      const turn = {
+        userMessage: null,
+        thinkingMessage: null,
+        geminiMessage: null,
+        grounding: null,
+      };
       const startingValidChunkIndex = i;
 
-      if (validChunks[i].role?.toLowerCase() === 'user') {
+      if (validChunks[i].role?.toLowerCase() === "user") {
         turn.userMessage = validChunks[i];
         i++;
       }
-      if (i < validChunks.length && validChunks[i].role?.toLowerCase() === 'model' && validChunks[i].isThought) {
+      if (
+        i < validChunks.length &&
+        validChunks[i].role?.toLowerCase() === "model" &&
+        validChunks[i].isThought
+      ) {
         turn.thinkingMessage = validChunks[i];
         i++;
       }
-      if (i < validChunks.length && validChunks[i].role?.toLowerCase() === 'model' && !validChunks[i].isThought) {
+      if (
+        i < validChunks.length &&
+        validChunks[i].role?.toLowerCase() === "model" &&
+        !validChunks[i].isThought
+      ) {
         turn.geminiMessage = validChunks[i];
         turn.grounding = validChunks[i].grounding;
         i++;
@@ -83,7 +95,12 @@ export default function App() {
 
   // Effect to perform the scroll once chatListRef and conversationTurns are ready
   useEffect(() => {
-    if (chatListRef && chatListRef.current && conversationTurns.length > 0 && scrollTargetIndex !== null) {
+    if (
+      chatListRef &&
+      chatListRef.current &&
+      conversationTurns.length > 0 &&
+      scrollTargetIndex !== null
+    ) {
       chatListRef.current.scrollToItem(scrollTargetIndex, "start"); // Corrected access
     }
   }, [chatListRef, conversationTurns, scrollTargetIndex]); // Removed setScrollTargetIndex from dependencies
@@ -97,7 +114,9 @@ export default function App() {
   };
 
   return (
-    <div className="app-layout"> {/* New layout container */}
+    <div className="app-layout">
+      {" "}
+      {/* New layout container */}
       <SidebarTOC
         chunks={chunks}
         isSidebarOpen={isSidebarOpen}
@@ -108,22 +127,26 @@ export default function App() {
         setScrollTargetIndex={setScrollTargetIndex}
         expandThinking={expandThinking}
         setExpandThinking={setExpandThinking}
-        animationsPaused={animationsPaused}
-        setAnimationsPaused={setAnimationsPaused}
         setChunks={setChunks} // Pass setChunks to SidebarTOC
         setFileName={setFileName} // Pass setFileName to SidebarTOC
         fileName={fileName} // Pass fileName to SidebarTOC
       />
-      <div className={`main-content ${isSidebarOpen ? '' : 'sidebar-closed'}`}> {/* Apply ref and class */}
+      <div className={`main-content ${isSidebarOpen ? "" : "sidebar-closed"}`}>
+        {" "}
+        {/* Apply ref and class */}
         <div className="app-header-title">
-          The Architect in the Echo:{fileName ? <span className="file-name-display"> {fileName}</span> : ''}
+          The Architect in the Echo:
+          {fileName ? (
+            <span className="file-name-display"> {fileName}</span>
+          ) : (
+            ""
+          )}
         </div>
         {conversationTurns.length > 0 ? (
           <ChatRenderer
             key={conversationTurns.length} // Force re-mount on data change
             conversationTurns={conversationTurns}
             expandThinking={expandThinking}
-            animationsEnabled={!animationsPaused} // Pass animationsEnabled prop
             onListRef={setChatListRef}
             scrollTargetIndex={scrollTargetIndex}
             onScrollComplete={handleScrollComplete}
