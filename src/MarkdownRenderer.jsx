@@ -1,7 +1,10 @@
-import React, { useMemo } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import ReactMarkdown from 'react-markdown';
+import React, { useMemo } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import LatexRenderer from "./LatexRenderer"; // Import the custom LatexRenderer
 
 const syntaxHighlighterStyle = { ...a11yDark };
 const preStyle = a11yDark['pre[class*="language-"]'] || {};
@@ -18,36 +21,48 @@ syntaxHighlighterStyle['code[class*="language-"]'] = {
 };
 
 const MarkdownRenderer = React.memo(({ markdown }) => {
-    const components = useMemo(() => ({
-        code({ node, inline, className, children, ...props }) {
-            const match = /language-(\w+)/.exec(className || '');
-            const language = match ? match[1] : '';
+  const components = useMemo(
+    () => ({
+      code({ node, inline, className, children, ...props }) {
+        const match = /language-(\w+)/.exec(className || "");
+        const language = match ? match[1] : "";
 
-            // Handle potential extra newline characters in children
-            const code = String(children).replace(/\n$/, '');
+        // Handle potential extra newline characters in children
+        const code = String(children).replace(/\n$/, "");
 
-            return !inline && language ? (
-                <SyntaxHighlighter
-                    style={syntaxHighlighterStyle}
-                    language={language}
-                    PreTag="div"
-                    {...props}
-                >
-                    {code}
-                </SyntaxHighlighter>
-            ) : (
-                <code className={className} {...props}>
-                    {children}
-                </code>
-            );
-        },
-    }), []);
+        return !inline && language ? (
+          <SyntaxHighlighter
+            style={syntaxHighlighterStyle}
+            language={language}
+            PreTag="div"
+            {...props}
+          >
+            {code}
+          </SyntaxHighlighter>
+        ) : (
+          <code className={className} {...props}>
+            {children}
+          </code>
+        );
+      },
+      // Custom rendering for math blocks
+      math: ({ value }) => <LatexRenderer latex={value} displayMode={true} />,
+      inlineMath: ({ value }) => (
+        <LateexRenderer latex={value} displayMode={false} />
+      ),
+    }),
+    [],
+  );
 
-    return (
-        <ReactMarkdown components={components}>
-            {markdown}
-        </ReactMarkdown>
-    );
+  return (
+    <ReactMarkdown
+      components={components}
+      remarkPlugins={[remarkMath]}
+      rehypePlugins={[rehypeKatex]}
+    >
+      {markdown}
+    </ReactMarkdown>
+  );
 });
 
 export default MarkdownRenderer;

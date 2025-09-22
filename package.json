@@ -12,12 +12,15 @@
   "dependencies": {
     "@react-hook/resize-observer": "^2.0.2",
     "dompurify": "^3.2.6",
+    "katex": "^0.16.22",
     "marked": "^16.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",
     "react-syntax-highlighter": "^15.6.6",
-    "react-window": "^1.8.10"
+    "react-window": "^1.8.10",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",
