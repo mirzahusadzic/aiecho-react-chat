@@ -12,7 +12,7 @@ html,
   height: 100%;
   font-family: "Fira Code", monospace;
   background-color: #0d1117; /* Dark blue-charcoal */
-  color: hsl(0, 0%, 95%); /* Brighter off-white */
+  color: hsl(210, 67%, 96%); /* Brighter off-white */
   overflow: hidden;
 }
 
