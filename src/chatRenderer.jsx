@@ -1,25 +1,13 @@
 import React from "react";
-import { marked } from "marked";
-import DOMPurify from "dompurify";
 import { VariableSizeList as List } from "react-window";
 import useResizeObserver from "@react-hook/resize-observer";
+import MarkdownRenderer from "./MarkdownRenderer";
 import "./App.css"; // chat-specific
-
-// Convert markdown → sanitized HTML
-function safeChunkBody(text) {
-  if (!text) return "<strong>NO DATA FOR THE CHUNK</strong>";
-  try {
-    const rawHtml = marked.parse(text);
-    return DOMPurify.sanitize(rawHtml);
-  } catch (e) {
-    return `<pre>Error rendering markdown: ${e}\n\n${text}</pre>`;
-  }
-}
 
 // User / Gemini bubble component
 function Bubble({
   role,
-  html,
+  markdown,
   id,
   isThought,
   expandThinking,
@@ -34,30 +22,26 @@ function Bubble({
   return (
     <div className="chat-container" id={id}>
       <div className={`${role}-avatar avatar`}>{avatar}</div>
-      <div className="bubble-tremble-wrapper">
-        <div className={`${bubbleClass}`}>
-          {isThought ? (
-            <div className="collapsible-thought">
-              <div
-                className="collapsible-summary"
-                onClick={() => toggleThoughtExpanded(id)}
-              >
-                🏻‎🏼‎🏽‎🏾🏿
-              </div>
-              {(isThoughtExpanded || expandThinking) && (
-                <div
-                  className="part-box"
-                  dangerouslySetInnerHTML={{ __html: html }}
-                />
-              )}
-            </div>
-          ) : (
+      <div className={`${bubbleClass}`}>
+        {isThought ? (
+          <div className="collapsible-thought">
             <div
-              className="bubble-inner"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
-          )}
-        </div>
+              className="collapsible-summary"
+              onClick={() => toggleThoughtExpanded(id)}
+            >
+              🏻‎🏼‎🏽‎🏾🏿
+            </div>
+            {(isThoughtExpanded || expandThinking) && (
+              <div className="part-box">
+                <MarkdownRenderer markdown={markdown} />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bubble-inner">
+            <MarkdownRenderer markdown={markdown} />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -162,7 +146,7 @@ const Row = ({ index, style, data }) => {
         {turn.userMessage && (
           <Bubble
             role="user"
-            html={safeChunkBody(turn.userMessage.text)}
+            markdown={turn.userMessage.text}
             id={`user-${id}`}
             isThought={false}
             expandThinking={expandThinking}
@@ -173,9 +157,9 @@ const Row = ({ index, style, data }) => {
         {turn.thinkingMessage && (
           <Bubble
             role="gemini-thinking"
-            html={safeChunkBody(
-              turn.thinkingMessage.parts?.map((p) => p.text).join("") || "",
-            )}
+            markdown={
+              turn.thinkingMessage.parts?.map((p) => p.text).join("") || ""
+            }
             id={`gemini-thought-${id}`}
             isThought={true}
             expandThinking={expandThinking}
@@ -186,11 +170,11 @@ const Row = ({ index, style, data }) => {
         {turn.geminiMessage && (
           <Bubble
             role="gemini"
-            html={safeChunkBody(
+            markdown={
               turn.geminiMessage.text ||
-                turn.geminiMessage.parts?.map((p) => p.text).join("") ||
-                "",
-            )}
+              turn.geminiMessage.parts?.map((p) => p.text).join("") ||
+              ""
+            }
             id={`gemini-model-${id}`}
             isThought={false}
             expandThinking={expandThinking}

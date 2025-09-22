@@ -1,6 +1,7 @@
 /* ===== Base page ===== */
 body {
-  color: #e0e0e0;
+  background-color: #1e2227;
+  color: hsl(0, 0%, 95%);
   font-family: "Fira Code", monospace;
 }
 
@@ -38,9 +39,10 @@ body {
   line-height: 1.8;
   word-wrap: break-word;
   display: flex;
-  justify-content: center;
-  max-width: 85%;
+  flex-shrink: 1;
+  flex-basis: auto;
   min-width: 150px;
+  max-width: 100%;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   transform: translateZ(0);
@@ -49,15 +51,24 @@ body {
   border: 1px solid rgba(46, 160, 67, 0.2);
 }
 
+.bubble:has(.syntax-highlighter-code-block) {
+  padding: 0;
+  border-radius: 8px;
+  border: none;
+}
+
 /* Inner bubble (text content) */
 .bubble-inner {
-  display: inline-block;
-  max-width: 90%;
+  display: block;
+  max-width: 100%;
   text-align: left;
-  color: #e0e0e0;
+  color: hsl(0, 0%, 95%);
   font-family: "Fira Code", monospace;
   font-weight: 500;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: antialiased;
+  white-space: normal;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
 }
 
 /* User and Gemini bubbles */
@@ -66,13 +77,21 @@ body {
   box-shadow: inset 0 0 8px rgba(245, 166, 35, 0.2); /* Amber-orange inner glow */
   background-color: #0d1117;
   border-color: rgba(245, 166, 35, 0.3);
+  min-width: 0;
 }
 
 .gemini-bubble {
   font-size: 1.15em;
   box-shadow: inset 0 0 8px rgba(46, 160, 67, 0.2); /* Electric cyan inner glow */
   background-color: #0d1117;
-  margin-left: auto; /* Push Gemini bubble to the right */
+  max-width: 90%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.gemini-bubble:has(.syntax-highlighter-code-block) {
+  box-shadow: none;
 }
 
 .bubble.gemini-thinking-bubble {
@@ -85,18 +104,20 @@ body {
 
 /* User and Gemini bubbles */
 
-/* Inline code inside Gemini bubbles */
-.gemini-bubble code {
-  background: #161b22;
+/* Inline code inside all bubbles */
+.bubble code {
+  background: hsl(215, 21%, 16%);
   color: #5eead4; /* Lighter cyan for inline code */
   font-family: "Fira Code", monospace;
-  font-size: 0.8em;
+  font-size: 0.9em;
   padding: 2px 4px;
   border-radius: 4px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 .gemini-bubble code::selection {
-  color: #e0e0e0;
+  color: hsl(0, 0%, 95%);
 }
 
 .bubble ::selection {
@@ -131,8 +152,7 @@ body {
 /* Styling for code blocks within chat bubbles */
 .bubble-inner pre,
 .part-box pre {
-  background-color: #010409; /* Even darker for code blocks */
-  color: #c9d1d9;
+  background-color: transparent;
   padding: 1em;
   border-radius: 8px;
   overflow-x: auto;
@@ -140,10 +160,13 @@ body {
   font-family: "Fira Code", monospace;
   font-size: 1em;
   line-height: 1.5;
-  border: 1px solid rgba(46, 160, 67, 0.3);
-  box-shadow: inset 0 0 8px rgba(46, 160, 67, 0.2);
   max-width: 100%; /* Ensure pre block does not exceed parent width */
   width: 100%; /* Ensure pre block takes full available width */
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  min-width: 0;
+  table-layout: fixed;
 }
 
 .bubble-inner pre code,
@@ -169,27 +192,35 @@ body {
 .chat-container {
   width: 100%;
   display: flex;
-  margin: 16px 0;
+  flex-shrink: 1;
+  min-width: 0;
   align-items: flex-start !important;
   padding: 15px;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: auto;
+}
+
+.chat-container.thinking-bubble-container {
+  justify-content: flex-start;
+}
+
+.chat-container:has(.gemini-thinking-avatar) {
+  justify-content: flex-start;
 }
 
 .chat-pair-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 24px;
   overflow-x: auto;
   border-radius: 8px;
   background-color: rgba(13, 17, 23, 0.5);
   overflow-x: auto;
-  box-shadow: inset 0 3px rgba(46, 160, 67, 0.2);
 }
+
 section[data-testid="stSidebar"] {
   background-color: #0d1117;
-  color: #e0e0e0;
+  color: hsl(0, 0%, 95%);
   font-size: 1em;
   font-family: "Fira Code", monospace !important;
   height: 100%;
@@ -201,6 +232,8 @@ section[data-testid="stSidebar"] {
   transition: all 0.3s ease-in-out;
   border-right: 1px solid #2ea043;
   box-shadow: 5px 0 15px rgba(46, 160, 67, 0.1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: antialiased;
 }
 
 @media (max-width: 768px) {
@@ -224,13 +257,14 @@ section[data-testid="stSidebar"] a {
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: antialiased;
 }
 
 section[data-testid="stSidebar"] a:hover {
   text-decoration: none;
   color: #c9d1d9;
   background-color: rgba(46, 160, 67, 0.2);
-  text-shadow: 0 0 8px rgba(46, 160, 67, 0.7);
 }
 
 section[data-testid="stSidebar"] > div:first-child {
@@ -392,6 +426,7 @@ table:not(.grounding-table) {
   margin: 1em 0;
   font-size: 0.85em !important;
   font-family: "Fira Code", monospace;
+  table-layout: fixed; /* Added to prevent overflow */
 }
 
 table:not(.grounding-table) thead {
@@ -409,7 +444,6 @@ table:not(.grounding-table) td {
 .part-box {
   font-family: "Fira Code", monospace;
   font-size: 1em;
-  color: rgba(245, 166, 35, 0.7); /* Amber-orange */
   padding: 10px;
   border-left: 3px solid rgba(245, 166, 35, 0.2);
   margin: 4px 0;
@@ -418,14 +452,16 @@ table:not(.grounding-table) td {
 
 /* Custom Collapsible Thought Box */
 .collapsible-thought {
+  display: inline-block;
 }
 
 .collapsible-summary {
   cursor: pointer;
   font-size: 1.2em;
   font-weight: bold;
-  color: #f5a623;
   margin-bottom: 5px;
+  padding: 0 18px;
+  display: inline-block;
 }
 
 .app-layout {
@@ -467,7 +503,6 @@ table:not(.grounding-table) td {
   align-items: center;
   justify-content: space-between; /* Distribute space between items */
   margin-bottom: 5px;
-  margin-left: 10px;
   cursor: pointer;
   font-size: 1.1em;
   color: #8b949e;
@@ -514,4 +549,140 @@ table:not(.grounding-table) td {
 .sidebar-control-label .switch-label {
   order: 1; /* Place before the switch container */
   margin-right: 10px; /* Space between label and switch */
+  margin-left: 10px;
+}
+
+/* --- Markdown Readability Improvements --- */
+.bubble-inner h1,
+.part-box h1 {
+  font-size: 1.8em;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  color: hsl(0, 0%, 95%); /* Reverted to body text color */
+  border-bottom: 1px solid rgba(46, 160, 67, 0.3);
+  padding-bottom: 0.3em;
+}
+
+.bubble-inner h2,
+.part-box h2 {
+  font-size: 1.5em;
+  margin-top: 1.4em;
+  margin-bottom: 0.7em;
+  color: hsl(0, 0%, 95%); /* Reverted to body text color */
+}
+
+.bubble-inner h3,
+.part-box h3 {
+  font-size: 1.3em;
+  margin-top: 1.3em;
+  margin-bottom: 0.6em;
+  color: hsl(0, 0%, 95%); /* Reverted to body text color */
+}
+
+.bubble-inner h4,
+.part-box h4 {
+  font-size: 1.2em;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  color: hsl(0, 0%, 95%); /* Reverted to body text color */
+}
+
+.bubble-inner h5,
+.part-box h5 {
+  font-size: 1.1em;
+  margin-top: 1.1em;
+  margin-bottom: 0.4em;
+  color: hsl(0, 0%, 95%); /* Reverted to body text color */
+}
+
+.bubble-inner h6,
+.part-box h6 {
+  font-size: 1em;
+  margin-top: 1em;
+  margin-bottom: 0.3em;
+  color: hsl(0, 0%, 95%); /* Reverted to body text color */
+}
+
+.bubble-inner p,
+.part-box p {
+  margin-bottom: 1em;
+}
+
+.bubble-inner ul,
+.part-box ul,
+.bubble-inner ol,
+.part-box ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.bubble-inner li,
+.part-box li {
+  margin-bottom: 0.5em;
+}
+
+.bubble-inner blockquote,
+.part-box blockquote {
+  border-left: 4px solid rgba(245, 166, 35, 0.5);
+  padding-left: 1em;
+  margin: 1em 0;
+  color: #8b949e; /* Grayish text for blockquotes */
+  font-style: italic;
+}
+
+.bubble-inner a,
+.part-box a {
+  color: #f5a623; /* Amber-orange for links */
+  text-decoration: underline;
+}
+
+.bubble-inner a:hover,
+.part-box a:hover {
+  color: #ffbf66; /* Lighter amber-orange on hover */
+  text-decoration: none;
+}
+
+.bubble-inner img,
+.part-box img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em 0;
+  border-radius: 4px;
+}
+
+/* Specific styling for SyntaxHighlighter's pre tag */
+.bubble-inner .syntax-highlighter-code-block,
+.part-box .syntax-highlighter-code-block {
+  background-color: transparent; /* Even darker for code blocks */
+  color: #c9d1d9;
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1em 0;
+  font-family: "Fira Code", monospace;
+  font-size: 1.1em;
+  line-height: 1.5;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.bubble-inner .syntax-highlighter-code-block code,
+.part-box .syntax-highlighter-code-block code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap; /* Allow text to wrap within code blocks */
+  overflow-wrap: break-word; /* Break long words to prevent overflow */
+}
+
+.bubble-inner pre,
+.part-box pre {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
