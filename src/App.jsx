@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
-import ChatRenderer from "./chatRenderer.jsx";
-import SidebarTOC from "./SidebarTOC.jsx";
+import ChatRenderer from "./components/chatRenderer.jsx";
+import SidebarTOC from "./components/SidebarTOC.jsx";
 import { loadChatJSON } from "./utils/loadJson.js";
 
 export default function App() {
