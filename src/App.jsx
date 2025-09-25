@@ -1,5 +1,12 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import ChatRenderer from "./components/chatRenderer.jsx";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+  lazy,
+  Suspense,
+} from "react";
+const ChatRenderer = lazy(() => import("./components/chatRenderer.jsx"));
 import SidebarTOC from "./components/SidebarTOC.jsx";
 import { loadChatJSON } from "./utils/loadJson.js";
 import "./styles/components/_app.css";
@@ -15,8 +22,9 @@ export default function App() {
   useEffect(() => {
     // Load default JSON on initial mount
     // loadChatJSON('/How_Can_I_Help_You.json')
-    //   .then(setChunks)
-    //   .catch(err => console.error('Failed to load chat JSON', err));
+    //  .then(setChunks)
+    //  .catch(err => console.error('Failed to load chat JSON', err));
+    // setFileName('How_Can_I_Help_You.json');
 
     // Handle initial URL hash for scrolling
     const handleInitialHashScroll = () => {
@@ -143,18 +151,20 @@ export default function App() {
             ""
           )}
         </div>
-        {conversationTurns.length > 0 ? (
-          <ChatRenderer
-            key={conversationTurns.length} // Force re-mount on data change
-            conversationTurns={conversationTurns}
-            expandThinking={expandThinking}
-            onListRef={setChatListRef}
-            scrollTargetIndex={scrollTargetIndex}
-            onScrollComplete={handleScrollComplete}
-          />
-        ) : (
-          <p>Loading chat...</p>
-        )}
+        <Suspense fallback={<p>Loading chat...</p>}>
+          {conversationTurns.length > 0 ? (
+            <ChatRenderer
+              key={conversationTurns.length} // Force re-mount on data change
+              conversationTurns={conversationTurns}
+              expandThinking={expandThinking}
+              onListRef={setChatListRef}
+              scrollTargetIndex={scrollTargetIndex}
+              onScrollComplete={handleScrollComplete}
+            />
+          ) : (
+            <p>Loading chat...</p>
+          )}
+        </Suspense>
       </div>
     </div>
   );

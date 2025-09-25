@@ -19,12 +19,24 @@
   background-color: var(--color-accent-orange-alpha-10);
 }
 
+.user-avatar::before {
+  content: "ִֶָ🐇";
+}
+
 .gemini-avatar {
   background-color: var(--color-accent-green-alpha-10);
   color: var(--color-accent-green);
 }
 
+.gemini-avatar::before {
+  content: "♊︎";
+}
+
 .gemini-thinking-avatar {
   color: var(--color-accent-green-light);
   background-color: var(--color-accent-green-alpha-10);
+}
+
+.gemini-thinking-avatar::before {
+  content: "♊︎";
 }

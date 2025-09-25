@@ -19,22 +19,23 @@ function Bubble({
   toggleThoughtExpanded,
 }) {
   const isThoughtExpanded = expandedThoughtIds.has(id);
-  const avatar = role === "user" ? "ִֶָ🐇" : "♊︎";
-  const bubbleClass =
-    role === "user" ? "bubble user-bubble" : "bubble gemini-bubble";
 
   return (
     <div className="chat-container" id={id}>
-      <div className={`${role}-avatar avatar`}>{avatar}</div>
-      <div className={`${bubbleClass}`}>
+      <div
+        className={`${role}-avatar avatar`}
+        role="img"
+        aria-label={`${role} avatar`}
+      ></div>
+      <div className={`bubble ${role}-bubble`}>
         {isThought ? (
           <div className="collapsible-thought">
-            <div
+            <button
+              type="button"
               className="collapsible-summary"
               onClick={() => toggleThoughtExpanded(id)}
-            >
-              🏻‎🏼‎🏽‎🏾🏿
-            </div>
+              aria-label="Toggle thought process"
+            ></button>
             {(isThoughtExpanded || expandThinking) && (
               <div className="part-box">
                 <MarkdownRenderer markdown={markdown} />
