@@ -30,7 +30,7 @@ const LatexRenderer = ({ latex, displayMode = true }) => {
         containerRef.current.appendChild(el);
 
         const isMathBlock =
-          block.startsWith("\\\[") ||
+          block.startsWith("\\[") ||
           block.startsWith("\\(") ||
           block.startsWith("\\begin") ||
           block.includes("&=") ||

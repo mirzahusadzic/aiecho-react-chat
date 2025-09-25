@@ -21,10 +21,19 @@ module.exports = {
     "react-refresh/only-export-components": "warn",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
+    "no-unused-vars": "error",
   },
   settings: {
     react: {
       version: "detect",
     },
   },
+  overrides: [
+    {
+      files: ["*.jsx"],
+      rules: {
+        "no-unused-vars": "error", // Ensure this rule is applied to JSX files
+      },
+    },
+  ],
 };

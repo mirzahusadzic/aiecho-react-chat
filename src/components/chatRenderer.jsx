@@ -62,7 +62,12 @@ function GroundingTable({ grounding, rowIndex }) {
       <tr key={`src-${rowIndex}-${src.referenceNumber}`}>
         <td>[source {src.referenceNumber}]</td>
         <td>
-          <a className="grounding-link" href={src.uri} target="_blank">
+          <a
+            className="grounding-link"
+            href={src.uri}
+            target="_blank"
+            rel="noreferrer"
+          >
             {src.title}
           </a>
         </td>
@@ -75,7 +80,12 @@ function GroundingTable({ grounding, rowIndex }) {
       <tr key={`seg-${rowIndex}-${idx}`}>
         <td>[corroboration {seg.index}]</td>
         <td>
-          <a className="grounding-link" href={seg.uri} target="_blank">
+          <a
+            className="grounding-link"
+            href={seg.uri}
+            target="_blank"
+            rel="noreferrer"
+          >
             {seg.uri}
           </a>
         </td>
@@ -206,8 +216,8 @@ export default function ChatRenderer({
   const containerRef = React.useRef(null);
   const [listWidth, setListWidth] = React.useState(0);
   const [listHeight, setListHeight] = React.useState(0);
-  const [isScrollingWithDelay, setIsScrollingWithDelay] = React.useState(false);
-  const [isUserAtBottom, setIsUserAtBottom] = React.useState(true);
+  const [isScrollingWithDelay, setIsScrollingWithDelay] = React.useState(false); // eslint-disable-line no-unused-vars
+  const [isUserAtBottom, setIsUserAtBottom] = React.useState(true); // eslint-disable-line no-unused-vars
   const [expandedThoughtIds, setExpandedThoughtIds] = React.useState(new Set());
 
   const listRef = React.useRef(null);
@@ -255,7 +265,7 @@ export default function ChatRenderer({
         frameId = requestAnimationFrame(checkScrollStop);
       }
     },
-    [listRef, setIsScrollingWithDelay],
+    [listRef, setIsScrollingWithDelay, onScrollComplete],
   );
 
   useResizeObserver(containerRef, (entry) => {

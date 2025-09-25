@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useRef,
-  lazy,
-  Suspense,
-} from "react";
+import React, { useEffect, useState, useMemo, lazy, Suspense } from "react";
 const ChatRenderer = lazy(() => import("./components/chatRenderer.jsx"));
 import SidebarTOC from "./components/SidebarTOC.jsx";
 import { loadChatJSON } from "./utils/loadJson.js";
@@ -21,10 +14,10 @@ export default function App() {
 
   useEffect(() => {
     // Load default JSON on initial mount
-    // loadChatJSON('/How_Can_I_Help_You.json')
+    // loadChatJSON("/How_Can_I_Help_You.json")
     //  .then(setChunks)
-    //  .catch(err => console.error('Failed to load chat JSON', err));
-    // setFileName('How_Can_I_Help_You.json');
+    //  .catch((err) => console.error("Failed to load chat JSON", err));
+    // setFileName("How_Can_I_Help_You.json");
 
     // Handle initial URL hash for scrolling
     const handleInitialHashScroll = () => {
