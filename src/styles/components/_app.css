@@ -1,0 +1,39 @@
+@import "../theme.css";
+
+/* ===== Base page ===== */
+body {
+  background-color: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  font-family: "Fira Code", monospace;
+}
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 20px;
+  width: 100%;
+  height: 100%;
+  scroll-behavior: auto !important;
+}
+
+.ReactVirtualized__Grid__innerScrollContainer {
+  width: 100% !important;
+}
+
+.app-header-title {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--color-accent-green);
+  text-shadow: var(--color-shadow-app-header);
+  font-size: 1.65em;
+  padding: 0;
+  margin-bottom: 0;
+  text-align: left;
+  border-bottom: 1px solid var(--color-accent-green-alpha-50);
+  background: none !important;
+}

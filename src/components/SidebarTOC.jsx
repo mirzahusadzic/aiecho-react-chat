@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
+import "../styles/components/_sidebar.css";
 
 // Helper to safely get text content from markdown, similar to your Python example
 function getPlainTextFromMarkdown(markdownText) {

@@ -2,7 +2,11 @@ import React from "react";
 import { VariableSizeList as List } from "react-window";
 import useResizeObserver from "@react-hook/resize-observer";
 import MarkdownRenderer from "./MarkdownRenderer";
-import "../App.css"; // chat-specific
+import "../styles/components/_bubble.css";
+import "../styles/components/_code.css";
+import "../styles/components/_markdown.css";
+import "../styles/components/_tables.css";
+import "../styles/components/_avatar.css";
 
 // User / Gemini bubble component
 function Bubble({

@@ -1,0 +1,121 @@
+@import "../theme.css";
+
+/* Inline code inside all bubbles */
+.bubble code {
+  background: var(--color-background-code-inline);
+  color: var(--color-accent-green-light); /* Lighter cyan for inline code */
+  font-family: "Fira Code", monospace;
+  font-size: 0.9em;
+  padding: 2px 4px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.gemini-bubble code::selection {
+  color: var(--color-text-primary);
+}
+
+.bubble ::selection {
+  background-color: var(
+    --color-background-selection
+  ); /* Electric cyan selection */
+  color: var(--color-text-selection);
+}
+
+.bubble pre code::selection,
+.bubble code::selection,
+.part-box pre code::selection,
+.part-box code::selection {
+  color: var(--color-text-selection);
+}
+
+/* Aggressive override for .part-box ::selection */
+.part-box ::selection {
+  background-color: var(
+    --color-background-part-box-selection
+  ) !important; /* Amber-orange selection */
+  color: var(--color-text-selection) !important;
+  text-shadow: none !important;
+  filter: none !important;
+  animation: none !important;
+  background-clip: initial !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Styling for code blocks within chat bubbles */
+.bubble-inner pre,
+.part-box pre {
+  background-color: transparent;
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1em 0;
+  font-family: "Fira Code", monospace;
+  font-size: 1em;
+  line-height: 1.5;
+  max-width: 100%; /* Ensure pre block does not exceed parent width */
+  width: 100%; /* Ensure pre block takes full available width */
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.bubble-inner pre code,
+.part-box pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap; /* Allow text to wrap within code blocks */
+  word-break: break-all; /* Break long words to prevent overflow */
+}
+
+.file-name-display {
+  color: var(--color-accent-orange); /* Amber-orange */
+  -webkit-text-fill-color: initial;
+  background-clip: initial;
+  -webkit-background-clip: initial;
+  text-shadow: none;
+}
+
+/* Specific styling for SyntaxHighlighter's pre tag */
+.bubble-inner .syntax-highlighter-code-block,
+.part-box .syntax-highlighter-code-block {
+  background-color: transparent; /* Even darker for code blocks */
+  color: var(--color-text-secondary);
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1em 0;
+  font-family: "Fira Code", monospace;
+  font-size: 1.1em;
+  line-height: 1.5;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.bubble-inner .syntax-highlighter-code-block code,
+.part-box .syntax-highlighter-code-block code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap; /* Allow text to wrap within code blocks */
+  overflow-wrap: break-word; /* Break long words to prevent overflow */
+}
+
+.bubble-inner pre,
+.part-box pre {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}

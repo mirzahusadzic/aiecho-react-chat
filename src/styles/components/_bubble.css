@@ -1,0 +1,113 @@
+@import "../theme.css";
+
+/* ===== Bubbles ===== */
+.bubble {
+  padding: 18px 22px;
+  border-radius: 4px;
+  line-height: 1.8;
+  word-wrap: break-word;
+  display: flex;
+  flex-shrink: 1;
+  flex-basis: auto;
+  min-width: 150px;
+  max-width: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  background-color: var(--color-background-primary);
+  border: 1px solid var(--color-accent-green-alpha-20);
+}
+
+.bubble:has(.syntax-highlighter-code-block) {
+  padding: 0;
+  border-radius: 8px;
+  border: none;
+}
+
+/* Inner bubble (text content) */
+.bubble-inner {
+  display: block;
+  max-width: 100%;
+  text-align: left;
+  color: var(--color-text-primary);
+  font-family: "Fira Code", monospace;
+  font-weight: 500;
+  -moz-osx-font-smoothing: antialiased;
+  white-space: normal;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+/* User and Gemini bubbles */
+.user-bubble {
+  font-size: 1.15em;
+  box-shadow: var(
+    --color-shadow-user-bubble-inset
+  ); /* Amber-orange inner glow */
+  background-color: var(--color-background-primary);
+  border-color: var(--color-accent-orange-alpha-30);
+  min-width: 0;
+}
+
+.gemini-bubble {
+  font-size: 1.15em;
+  box-shadow: var(
+    --color-shadow-gemini-bubble-inset
+  ); /* Electric cyan inner glow */
+  background-color: var(--color-background-primary);
+  max-width: 90%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.gemini-bubble:has(.syntax-highlighter-code-block) {
+  box-shadow: none;
+}
+
+.bubble.gemini-thinking-bubble {
+  font-size: 1em;
+  color: var(--color-accent-green-light);
+  border: 1px dashed var(--color-accent-green-alpha-50);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.chat-container {
+  width: 100%;
+  display: flex;
+  flex-shrink: 1;
+  min-width: 0;
+  align-items: flex-start !important;
+  padding: 15px;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.chat-container.thinking-bubble-container {
+  justify-content: flex-start;
+}
+
+.chat-container:has(.gemini-thinking-avatar) {
+  justify-content: flex-start;
+}
+
+.chat-pair-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-x: auto;
+  border-radius: 8px;
+  background-color: var(--color-background-primary);
+  overflow-x: auto;
+}
+
+.part-box {
+  font-family: "Fira Code", monospace;
+  font-size: 1em;
+  padding: 10px;
+  border-left: 3px solid var(--color-accent-orange-alpha-20);
+  margin: 4px 0;
+  line-height: 1.7;
+}
