@@ -1,0 +1,58 @@
+/* src/styles/theme.css */
+
+:root {
+  /* Backgrounds */
+  --color-background-primary: #0d1117; /* Dark blue-charcoal, used in index.css body and bubble */
+  --color-background-secondary: #1e2227; /* Darker background, used in App.css body */
+  --color-background-bubble-inner: #0d1117; /* Same as primary background */
+  --color-background-code-inline: hsl(215, 21%, 16%); /* Inline code background */
+  --color-background-grounding-table: rgba(13, 17, 23, 0.8); /* Grounding table background */
+  --color-background-sidebar-hover: rgba(46, 160, 67, 0.8); /* Sidebar link hover */
+  --color-background-sidebar-button-selected: #2ea043; /* Sidebar button selected */
+  --color-background-table-header: rgba(46, 160, 67, 0.1); /* Markdown table header */
+  --color-background-selection: rgba(46, 160, 67, 0.4); /* Selection background */
+  --color-background-part-box-selection: rgba(245, 166, 35, 0.2); /* Part box selection */
+  --color-background-grounding-link: rgba(22, 27, 34, 0.3); /* Grounding link background */
+  --color-background-grounding-link-hover: rgba(22, 27, 34, 0.6); /* Grounding link hover */
+
+  /* Text Colors */
+  --color-text-primary: hsl(210, 67%, 96%); /* Brighter off-white, used in index.css body, bubble-inner, h1-h6 */
+  --color-text-secondary: #c9d1d9; /* Lighter gray, used in sidebar link hover, code block text */
+  --color-text-muted: #8b949e; /* Grayish text, used in blockquotes, grounding table first column, sidebar label */
+  --color-text-grounding-table: #ddd; /* Lighter gray for grounding table */
+  --color-text-selection: #ffffff; /* White for selection text */
+  --color-text-sidebar-button-selected: #0d1117; /* Dark text for selected sidebar button */
+
+  /* Accent Colors - Green/Cyan */
+  --color-accent-green: #2ea043; /* Electric cyan/green, used in scrollbar, sidebar toggle, sidebar button */
+  --color-accent-green-light: #5eead4; /* Lighter cyan, used in gemini thinking avatar, inline code, sidebar link hover */
+  --color-accent-green-alpha-10: rgba(46, 160, 67, 0.1); /* Gemini avatar background, markdown table header */
+  --color-accent-green-alpha-20: rgba(46, 160, 67, 0.2); /* Gemini bubble shadow, sidebar link hover */
+  --color-accent-green-alpha-30: rgba(46, 160, 67, 0.3); /* Body shadow, h1 border */
+  --color-accent-green-alpha-40: rgba(46, 160, 67, 0.4); /* Selection background, sidebar title border */
+  --color-accent-green-alpha-50: rgba(46, 160, 67, 0.5); /* Gemini thinking border, app header border */
+  --color-accent-green-alpha-60: rgba(46, 160, 67, 0.6); /* Sidebar button hover shadow */
+  --color-accent-green-alpha-80: rgba(46, 160, 67, 0.8); /* App header shadow */
+
+  /* Accent Colors - Orange/Amber */
+  --color-accent-orange: #f5a623; /* Amber-orange, used in user avatar, file name display, grounding link, markdown links */
+  --color-accent-orange-light: #ffbf66; /* Lighter amber-orange, used in grounding link hover, markdown link hover */
+  --color-accent-orange-alpha-10: rgba(245, 166, 35, 0.1); /* User avatar background */
+  --color-accent-orange-alpha-20: rgba(245, 166, 35, 0.2); /* User bubble shadow, part box selection */
+  --color-accent-orange-alpha-30: rgba(245, 166, 35, 0.3); /* User bubble border */
+  --color-accent-orange-alpha-50: rgba(245, 166, 35, 0.5); /* Blockquote border, app header shadow */
+
+  /* Borders & Shadows */
+  --color-border-default: #30363d; /* Used in markdown tables */
+  --color-border-sidebar: #2ea043; /* Sidebar right border */
+  --color-border-grounding-table: rgba(46, 160, 67, 0.1); /* Grounding table cell border */
+  --color-shadow-bubble: 0 0 8px var(--color-accent-green-alpha-30); /* Bubble shadow */
+  --color-shadow-user-bubble-inset: inset 0 0 8px var(--color-accent-orange-alpha-20); /* User bubble inset shadow */
+  --color-shadow-gemini-bubble-inset: inset 0 0 8px var(--color-accent-green-alpha-20); /* Gemini bubble inset shadow */
+  --color-shadow-sidebar: 5px 0 15px var(--color-accent-green-alpha-10); /* Sidebar shadow */
+  --color-shadow-sidebar-button: 0 0 8px var(--color-accent-green-alpha-40); /* Sidebar button shadow */
+  --color-shadow-sidebar-button-hover: 0 0 12px var(--color-accent-green-alpha-60); /* Sidebar button hover shadow */
+  --color-shadow-sidebar-button-selected: 0 0 8px var(--color-accent-green-alpha-60); /* Sidebar button selected shadow */
+  --color-shadow-grounding-table: 0 0 6px rgba(46, 160, 67, 0.35); /* Grounding table shadow */
+  --color-shadow-app-header: 0 0 8px var(--color-accent-green-alpha-80), 0 0 8px var(--color-accent-orange-alpha-50); /* App header shadow */
+}
