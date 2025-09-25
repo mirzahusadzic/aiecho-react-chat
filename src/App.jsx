@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, lazy, Suspense } from "react";
 const ChatRenderer = lazy(() => import("./components/chatRenderer.jsx"));
 import SidebarTOC from "./components/SidebarTOC.jsx";
-import { loadChatJSON } from "./utils/loadJson.js";
+// import { loadChatJSON } from "./utils/loadJson.js";
 import "./styles/components/_app.css";
 
 export default function App() {

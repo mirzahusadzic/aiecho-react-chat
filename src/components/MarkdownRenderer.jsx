@@ -4,6 +4,7 @@ import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import remarkGfm from "remark-gfm";
 import LatexRenderer from "./LatexRenderer"; // Import the custom LatexRenderer
 
 const syntaxHighlighterStyle = { ...a11yDark };
@@ -58,7 +59,7 @@ const MarkdownRenderer = React.memo(({ markdown }) => {
   return (
     <ReactMarkdown
       components={components}
-      remarkPlugins={[remarkMath]}
+      remarkPlugins={[remarkMath, remarkGfm]}
       rehypePlugins={[rehypeKatex]}
     >
       {markdown}
