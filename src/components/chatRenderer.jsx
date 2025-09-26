@@ -158,48 +158,56 @@ const Row = ({ index, style, data }) => {
   return (
     <div style={style}>
       <div ref={rowRef} className="chat-pair-container" id={id}>
-        {turn.userMessage && (
-          <Bubble
-            role="user"
-            markdown={turn.userMessage.text}
-            id={`user-${id}`}
-            isThought={false}
-            expandThinking={expandThinking}
-            expandedThoughtIds={expandedThoughtIds}
-            toggleThoughtExpanded={toggleThoughtExpanded}
-          />
-        )}
-        {turn.thinkingMessage && (
-          <Bubble
-            role="gemini-thinking"
-            markdown={
-              turn.thinkingMessage.parts?.map((p) => p.text).join("") || ""
-            }
-            id={`gemini-thought-${id}`}
-            isThought={true}
-            expandThinking={expandThinking}
-            expandedThoughtIds={expandedThoughtIds}
-            toggleThoughtExpanded={toggleThoughtExpanded}
-          />
-        )}
-        {turn.geminiMessage && (
-          <Bubble
-            role="gemini"
-            markdown={
-              turn.geminiMessage.text ||
-              turn.geminiMessage.parts?.map((p) => p.text).join("") ||
-              ""
-            }
-            id={`gemini-model-${id}`}
-            isThought={false}
-            expandThinking={expandThinking}
-            expandedThoughtIds={expandedThoughtIds}
-            toggleThoughtExpanded={toggleThoughtExpanded}
-          />
-        )}
-        {turn.grounding && (
-          <GroundingTable grounding={turn.grounding} rowIndex={index} />
-        )}
+        <div
+          style={{
+            paddingTop: "15px",
+            borderTop: "3px solid var(--color-accent-orange-alpha-55)",
+            borderRadius: "10px",
+          }}
+        >
+          {turn.userMessage && (
+            <Bubble
+              role="user"
+              markdown={turn.userMessage.text}
+              id={`user-${id}`}
+              isThought={false}
+              expandThinking={expandThinking}
+              expandedThoughtIds={expandedThoughtIds}
+              toggleThoughtExpanded={toggleThoughtExpanded}
+            />
+          )}
+          {turn.thinkingMessage && (
+            <Bubble
+              role="gemini-thinking"
+              markdown={
+                turn.thinkingMessage.parts?.map((p) => p.text).join("") || ""
+              }
+              id={`gemini-thought-${id}`}
+              isThought={true}
+              expandThinking={expandThinking}
+              expandedThoughtIds={expandedThoughtIds}
+              toggleThoughtExpanded={toggleThoughtExpanded}
+            />
+          )}
+          {turn.geminiMessage && (
+            <Bubble
+              role="gemini"
+              markdown={
+                turn.geminiMessage.text ||
+                turn.geminiMessage.parts?.map((p) => p.text).join("") ||
+                ""
+              }
+              id={`gemini-model-${id}`}
+              isThought={false}
+              expandThinking={expandThinking}
+              expandedThoughtIds={expandedThoughtIds}
+              toggleThoughtExpanded={toggleThoughtExpanded}
+            />
+          )}
+          {turn.grounding && (
+            <GroundingTable grounding={turn.grounding} rowIndex={index} />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -313,7 +321,8 @@ export default function ChatRenderer({
   }, [conversationTurns.length]);
 
   const getItemSize = (index) => {
-    return itemHeightsRef.current.get(index) || 250;
+    const measuredHeight = itemHeightsRef.current.get(index) || 250;
+    return measuredHeight + 20; // Add 20px for spacing
   };
 
   return (

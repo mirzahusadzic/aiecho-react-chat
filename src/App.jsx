@@ -7,10 +7,11 @@ import "./styles/components/_app.css";
 export default function App() {
   const [chunks, setChunks] = useState([]);
   const [expandThinking, setExpandThinking] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [chatListRef, setChatListRef] = useState(null);
   const [scrollTargetIndex, setScrollTargetIndex] = useState(null);
   const [fileName, setFileName] = useState(""); // New state for file name
+  const [isMobile, setIsMobile] = useState(false);
 
   // Helper function to remove file extension
   const removeFileExtension = (name) => {
@@ -22,6 +23,26 @@ export default function App() {
     () => removeFileExtension(fileName),
     [fileName],
   );
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile(); // Check on initial mount
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Collapse sidebar if on mobile
+    if (isMobile) {
+      setIsSidebarOpen(false);
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     // Load default JSON on initial mount
@@ -158,7 +179,7 @@ export default function App() {
         <Suspense
           fallback={
             <p style={{ margin: "10px" }}>
-              Loading chat... <span style={{ fontSize: "1.5em" }}>🐈</span>
+              Loading chat... <span style={{ fontSize: "1.5em" }}>ִֶָ🐇</span>
             </p>
           }
         >
@@ -173,7 +194,7 @@ export default function App() {
             />
           ) : (
             <p style={{ margin: "10px" }}>
-              Loading chat... <span style={{ fontSize: "1.5em" }}>🐈</span>
+              Loading chat... <span style={{ fontSize: "1.5em" }}>ִֶָ🐇</span>
             </p>
           )}
         </Suspense>

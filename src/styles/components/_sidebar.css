@@ -11,7 +11,10 @@ section[data-testid="stSidebar"] {
   max-width: 300px;
   overflow-y: auto;
   position: relative;
-  transition: all 0.1s ease-in-out;
+  transition:
+    flex-basis 0.3s ease-in-out,
+    max-width 0.3s ease-in-out,
+    padding-right 0.3s ease-in-out;
   border-right: 1px solid var(--color-border-sidebar);
   box-shadow: var(--color-shadow-sidebar);
   -webkit-font-smoothing: antialiased;
@@ -93,6 +96,7 @@ section[data-testid="stSidebar"].closed {
   max-width: 40px;
   overflow: hidden;
   padding-right: 0;
+  min-width: 0; /* Allow full collapse on mobile */
 }
 
 .main-content.sidebar-closed {
@@ -107,7 +111,7 @@ section[data-testid="stSidebar"].closed {
 .sidebar-button {
   font-weight: bolder;
   border: 1px solid var(--color-accent-green-light);
-  background-color: var(--color-accent-green);
+  background-color: var(--color-accent-green-alpha-50);
   color: var(--color-text-primary);
   padding: 6px 6px;
   border-radius: 6px;

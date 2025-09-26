@@ -200,10 +200,16 @@
     55%,
     0.5
   ); /* Blockquote border, app header shadow */
+  --color-accent-orange-alpha-55: hsla(
+    37,
+    91%,
+    55%,
+    0.55
+  ); /* Chat pair container's top border */
 
   /* Borders & Shadows */
   --color-border-default: hsl(212, 12%, 21%); /* Used in markdown tables */
-  --color-border-sidebar: hsl(131, 55%, 10%); /* Sidebar right border */
+  --color-border-sidebar: hsl(131, 55%, 7%); /* Sidebar right border */
   --color-border-grounding-table: hsla(131, 55%, 40%, 0.1);
 
   /* Grounding table cell border */
