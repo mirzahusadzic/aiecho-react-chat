@@ -22,10 +22,11 @@
     28%,
     7%
   ); /* Same as primary background */
-  --color-background-code-inline: hsl(
+  --color-background-code-inline: hsla(
     215,
-    21%,
-    16%
+    51%,
+    45%,
+    0.2
   ); /* Inline code background */
   --color-background-grounding-table: hsla(
     216,
@@ -74,7 +75,18 @@
     11%,
     0.6
   ); /* Grounding link hover */
-
+  --color-background-table-thead: hsla(
+    37,
+    91%,
+    55%,
+    0.5
+  ); /* Table's (not grounding) tbody */
+  --color-background-table-tbody: hsla(
+    131,
+    55%,
+    7%,
+    0.35
+  ); /* Table's (not grounding) tbody */
   /* Text Colors */
   --color-text-primary: hsl(
     210,
@@ -112,7 +124,7 @@
   --color-accent-green-light: hsl(
     171,
     77%,
-    64%
+    74%
   ); /* Lighter cyan, used in gemini thinking avatar, inline code, sidebar link hover */
   --color-accent-green-alpha-10: hsla(
     131,

@@ -96,3 +96,10 @@
   margin: 1em 0;
   border-radius: 4px;
 }
+
+.bubble-inner hr,
+.part-box hr {
+  border: none; /* Remove default border */
+  border-top: 1px solid var(--color-accent-orange-alpha-50); /* Apply custom border color */
+  margin: 1em 0; /* Add some vertical spacing */
+}
