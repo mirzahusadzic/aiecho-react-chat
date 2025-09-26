@@ -12,6 +12,17 @@ export default function App() {
   const [scrollTargetIndex, setScrollTargetIndex] = useState(null);
   const [fileName, setFileName] = useState(""); // New state for file name
 
+  // Helper function to remove file extension
+  const removeFileExtension = (name) => {
+    const lastDotIndex = name.lastIndexOf(".");
+    return lastDotIndex !== -1 ? name.substring(0, lastDotIndex) : name;
+  };
+
+  const displayedFileName = useMemo(
+    () => removeFileExtension(fileName),
+    [fileName],
+  );
+
   useEffect(() => {
     // Load default JSON on initial mount
     // loadChatJSON("/How_Can_I_Help_You.json")
@@ -138,13 +149,19 @@ export default function App() {
         {/* Apply ref and class */}
         <div className="app-header-title">
           The Architect in the Echo:
-          {fileName ? (
-            <span className="file-name-display"> {fileName}</span>
+          {displayedFileName ? (
+            <span className="file-name-display"> {displayedFileName}</span>
           ) : (
             ""
           )}
         </div>
-        <Suspense fallback={<p>Loading chat...</p>}>
+        <Suspense
+          fallback={
+            <p style={{ margin: "10px" }}>
+              Loading chat... <span style={{ fontSize: "1.5em" }}>🐈</span>
+            </p>
+          }
+        >
           {conversationTurns.length > 0 ? (
             <ChatRenderer
               key={conversationTurns.length} // Force re-mount on data change
@@ -155,7 +172,9 @@ export default function App() {
               onScrollComplete={handleScrollComplete}
             />
           ) : (
-            <p>Loading chat...</p>
+            <p style={{ margin: "10px" }}>
+              Loading chat... <span style={{ fontSize: "1.5em" }}>🐈</span>
+            </p>
           )}
         </Suspense>
       </div>

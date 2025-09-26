@@ -76,14 +76,6 @@
   word-break: break-all; /* Break long words to prevent overflow */
 }
 
-.file-name-display {
-  color: var(--color-accent-orange); /* Amber-orange */
-  -webkit-text-fill-color: initial;
-  background-clip: initial;
-  -webkit-background-clip: initial;
-  text-shadow: none;
-}
-
 /* Specific styling for SyntaxHighlighter's pre tag */
 .bubble-inner .syntax-highlighter-code-block,
 .part-box .syntax-highlighter-code-block {

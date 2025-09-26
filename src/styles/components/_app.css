@@ -4,7 +4,7 @@
 body {
   background-color: var(--color-background-secondary);
   color: var(--color-text-primary);
-  font-family: "Fira Code", monospace;
+  font-family: "Roboto Mono", monospace;
 }
 
 .app-layout {
@@ -29,13 +29,22 @@ body {
 .app-header-title {
   background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: var(--color-accent-green);
+  -webkit-text-fill-color: var(--color-accent-orange-light);
   text-shadow: var(--color-shadow-app-header);
-  font-size: 1.65em;
+  font-size: 1.5em;
   padding: 0;
-  margin-bottom: 0;
-  text-align: left;
-  border-bottom: 1px solid var(--color-accent-green-alpha-50);
+  margin-top: 5px;
+  margin-bottom: 3px;
+  text-align: center;
+  border-bottom: 2px solid var(--color-border-sidebar);
   background: none !important;
   overflow-wrap: break-word; /* Allow long filenames to wrap */
+}
+
+.file-name-display {
+  color: var(--color-accent-orange); /* Amber-orange */
+  -webkit-text-fill-color: initial;
+  background-clip: initial;
+  -webkit-background-clip: initial;
+  text-shadow: none;
 }

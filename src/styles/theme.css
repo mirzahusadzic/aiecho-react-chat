@@ -10,13 +10,9 @@
   --color-background-primary-light-10: hsl(
     216,
     28%,
-    17%
+    15%
   ); /* Dark blue-charcoal, used in index.css and sidebar switch */
-  --color-background-secondary: hsl(
-    213,
-    13%,
-    14%
-  ); /* Darker background, used in App.css body */
+  --color-background-secondary: hsl(216, 28%, 25%);
   --color-background-bubble-inner: hsl(
     216,
     28%,
@@ -207,11 +203,11 @@
 
   /* Borders & Shadows */
   --color-border-default: hsl(212, 12%, 21%); /* Used in markdown tables */
-  --color-border-sidebar: hsl(131, 55%, 40%); /* Sidebar right border */
+  --color-border-sidebar: hsl(131, 55%, 10%); /* Sidebar right border */
   --color-border-grounding-table: hsla(131, 55%, 40%, 0.1);
 
   /* Grounding table cell border */
-  --color-shadow-bubble: 0 0 8px var(--color-accent-green-alpha-30); /* Bubble shadow */
+  --color-shadow-bubble: 0 0 8px var(--color-background-secondary); /* Bubble shadow */
   --color-shadow-user-bubble-inset: inset 0 0 8px
     var(--color-accent-orange-alpha-20); /* User bubble inset shadow */
   --color-shadow-gemini-bubble-inset: inset 0 0 8px
@@ -224,6 +220,6 @@
     var(--color-accent-green-alpha-60); /* Sidebar button selected shadow */
   --color-shadow-grounding-table: 0 0 6px hsla(131, 55%, 40%, 0.35); /* Grounding table shadow */
   --color-shadow-app-header:
-    0 0 8px var(--color-accent-green-alpha-80),
-    0 0 8px var(--color-accent-orange-alpha-50); /* App header shadow */
+    0 0 10px var(--color-accent-orange-alpha-50),
+    0 0 10px var(--color-accent-orange-alpha-50); /* App header shadow */
 }

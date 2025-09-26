@@ -60,11 +60,12 @@ export default function SidebarTOC({
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const fileNameWithoutExtension = file.name
-        .split(".")
-        .slice(0, -1)
-        .join(".");
-      setFileName(fileNameWithoutExtension); // Update the file name in App.jsx state
+      const parts = file.name.split(".");
+      const fileNameToSet =
+        parts.length > 1 && parts[0] !== ""
+          ? parts.slice(0, -1).join(".")
+          : file.name;
+      setFileName(fileNameToSet); // Update the file name in App.jsx state
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
@@ -145,7 +146,7 @@ export default function SidebarTOC({
               const text = getPlainTextFromMarkdown(chunk.text);
               const short_preview =
                 text.length > 40 ? text.substring(0, 37) + "..." : text;
-              const label = `${validIndex + 1}. ${short_preview}`;
+              const label = `${short_preview}`;
               return (
                 <a
                   key={`toc-item-${i}`}

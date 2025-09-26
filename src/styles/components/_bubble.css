@@ -69,7 +69,7 @@
 .bubble.gemini-thinking-bubble {
   font-size: 1em;
   color: var(--color-accent-green-light);
-  border: 1px dashed var(--color-accent-green-alpha-50);
+  border: 1px dashed var(--color-background-secondary);
   -webkit-mask-image: none;
   mask-image: none;
 }
@@ -80,7 +80,7 @@
   flex-shrink: 1;
   min-width: 0;
   align-items: flex-start !important;
-  padding: 15px;
+  padding: 5px;
   border-radius: 8px;
   overflow: auto;
 }
