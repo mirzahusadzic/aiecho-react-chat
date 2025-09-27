@@ -111,7 +111,7 @@ function GroundingTable({ grounding, rowIndex }) {
 }
 
 // Row component for react-window
-const Row = ({ index, style, data }) => {
+const Row = ({ index, style, data, isScrolling }) => {
   const {
     conversationTurns,
     expandThinking,
@@ -124,7 +124,7 @@ const Row = ({ index, style, data }) => {
   const rowRef = React.useRef(null);
 
   React.useLayoutEffect(() => {
-    if (!rowRef.current) return;
+    if (!rowRef.current || isScrolling) return;
 
     const observer = new ResizeObserver(() => {
       if (!rowRef.current) return;
@@ -149,6 +149,7 @@ const Row = ({ index, style, data }) => {
     expandedThoughtIds,
     listRef,
     itemHeightsRef,
+    isScrolling,
   ]);
 
   if (!turn) return null;
@@ -224,12 +225,12 @@ export default function ChatRenderer({
   const containerRef = React.useRef(null);
   const [listWidth, setListWidth] = React.useState(0);
   const [listHeight, setListHeight] = React.useState(0);
-  const [isScrollingWithDelay, setIsScrollingWithDelay] = React.useState(false); // eslint-disable-line no-unused-vars
   const [isUserAtBottom, setIsUserAtBottom] = React.useState(true); // eslint-disable-line no-unused-vars
   const [expandedThoughtIds, setExpandedThoughtIds] = React.useState(new Set());
 
   const listRef = React.useRef(null);
   const itemHeightsRef = React.useRef(new Map());
+  const scrollStopTimeout = React.useRef();
 
   const toggleThoughtExpanded = React.useCallback((id) => {
     setExpandedThoughtIds((prev) => {
@@ -243,76 +244,25 @@ export default function ChatRenderer({
     });
   }, []);
 
-  const handleListScroll = React.useCallback(
-    ({ scrollOffset }) => {
-      // This is the scroll event from react-window
-      // We need to detect when scrolling stops
-      let lastScrollTop = scrollOffset;
-      let frameId = null;
-
-      const checkScrollStop = () => {
-        if (
-          listRef.current &&
-          listRef.current._outerRef.scrollTop === lastScrollTop
-        ) {
-          // Scroll has stopped
-          setIsScrollingWithDelay(false);
-          if (onScrollComplete) {
-            onScrollComplete();
-          }
-          cancelAnimationFrame(frameId);
-          frameId = null;
-        } else {
-          lastScrollTop = listRef.current._outerRef.scrollTop;
-          frameId = requestAnimationFrame(checkScrollStop);
-        }
-      };
-
-      setIsScrollingWithDelay(true);
-      if (!frameId) {
-        frameId = requestAnimationFrame(checkScrollStop);
+  const handleScroll = React.useCallback(() => {
+    clearTimeout(scrollStopTimeout.current);
+    scrollStopTimeout.current = setTimeout(() => {
+      if (onScrollComplete) {
+        onScrollComplete();
       }
-    },
-    [listRef, setIsScrollingWithDelay, onScrollComplete],
-  );
+    }, 150);
+  }, [onScrollComplete]);
 
   useResizeObserver(containerRef, (entry) => {
     setListWidth(entry.contentRect.width);
     setListHeight(entry.contentRect.height);
   });
 
-  // Custom scroll event listener to manage isScrollingWithDelay
-  React.useEffect(() => {
-    if (!containerRef.current) return;
-
-    const listElement = containerRef.current; // Attach to the main scrollable container
-
-    listElement.addEventListener("scroll", handleListScroll);
-    listElement.addEventListener("wheel", handleListScroll); // Also listen for wheel events
-
-    return () => {
-      listElement.removeEventListener("scroll", handleListScroll);
-      listElement.removeEventListener("wheel", handleListScroll);
-    };
-  }, [containerRef, handleListScroll]); // Dependency on containerRef and handleListScroll
-
   React.useEffect(() => {
     if (onListRef) {
       onListRef(listRef);
     }
   }, [onListRef, listRef]);
-
-  // This effect triggers a layout recalculation after the initial mount,
-  // which fixes the initial "messed up" layout.
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      if (listRef.current) {
-        listRef.current.resetAfterIndex(0);
-      }
-    }, 100); // Delay to allow initial rows to measure themselves.
-
-    return () => clearTimeout(timer);
-  }, []); // Run only once on mount.
 
   React.useEffect(() => {
     if (listRef.current) {
@@ -348,7 +298,8 @@ export default function ChatRenderer({
             toggleThoughtExpanded,
             scrollTargetIndex,
           }}
-          onScroll={handleListScroll}
+          useIsScrolling
+          onScroll={handleScroll}
           onItemsRendered={({ visibleStartIndex, visibleStopIndex }) => {
             // Update isUserAtBottom based on visible items
             setIsUserAtBottom(
