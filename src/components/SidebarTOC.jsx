@@ -144,13 +144,11 @@ export default function SidebarTOC({
               const validIndex = originalIndexToValidIndexMap[i];
               if (validIndex === undefined) return null; // Skip if not a valid item in the virtualized list
               const text = getPlainTextFromMarkdown(chunk.text);
-              const short_preview =
-                text.length > 40 ? text.substring(0, 37) + "..." : text;
-              const label = `${short_preview}`;
+              const label = `${text}`;
               return (
                 <a
                   key={`toc-item-${i}`}
-                  href={`#msg${i}`}
+                  href={`#msg${validIndex}`}
                   onClick={(e) => handleTocClick(e, i)}
                 >
                   {label}
