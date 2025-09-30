@@ -72,6 +72,10 @@ To get a local copy up and running, follow these simple steps.
 
    This will open the application in your browser, usually at `http://localhost:5173`.
 
+## Live Demo
+
+Access the live application here: [https://mirzahusadzic.github.io/aiecho-react-chat/](https://mirzahusadzic.github.io/aiecho-react-chat/)
+
 ## Usage
 
 The application will load a default chat log (`Painters_And_Programmers.json`) on startup.
