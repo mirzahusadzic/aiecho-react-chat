@@ -46,7 +46,8 @@ export default function App() {
 
   useEffect(() => {
     // Load default JSON on initial mount
-    loadChatJSON("/Painters_And_Programmers.json")
+    const jsonFilePath = `${import.meta.env.BASE_URL}Painters_And_Programmers.json`;
+    loadChatJSON(jsonFilePath)
       .then(setChunks)
       .catch((err) => console.error("Failed to load chat JSON", err));
     setFileName("Painters_And_Programmers.json");
