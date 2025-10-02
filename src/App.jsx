@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useMemo, lazy, Suspense } from "react";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  lazy,
+  Suspense,
+  useRef,
+} from "react";
 const ChatRenderer = lazy(() => import("./components/chatRenderer.jsx"));
 import SidebarTOC from "./components/SidebarTOC.jsx";
 import { loadChatJSON } from "./utils/loadJson.js";
@@ -148,6 +155,44 @@ export default function App() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const fileInputRef = useRef(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click(); // triggers file picker
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const parts = file.name.split(".");
+      const fileNameToSet =
+        parts.length > 1 && parts[0] !== ""
+          ? parts.slice(0, -1).join(".")
+          : file.name;
+      setFileName(fileNameToSet); // Update the file name in App.jsx state
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsedJson = JSON.parse(e.target.result);
+          const extractedChunks = parsedJson?.chunkedPrompt?.chunks || [];
+          if (Array.isArray(extractedChunks)) {
+            setChunks(extractedChunks);
+          } else {
+            console.error("Error: Extracted chat chunks are not an array.");
+            alert(
+              "Error: Selected JSON file does not contain a valid array of chat chunks under 'chunkedPrompt.chunks'.",
+            );
+            setChunks([]); // Clear chunks or handle as appropriate
+          }
+        } catch (error) {
+          console.error("Error parsing JSON file:", error);
+          alert("Error parsing JSON file. Please ensure it's a valid JSON.");
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
   return (
     <div className="app-layout">
       {" "}
@@ -162,20 +207,34 @@ export default function App() {
         setScrollTargetIndex={setScrollTargetIndex}
         expandThinking={expandThinking}
         setExpandThinking={setExpandThinking}
-        setChunks={setChunks} // Pass setChunks to SidebarTOC
-        setFileName={setFileName} // Pass setFileName to SidebarTOC
-        fileName={fileName} // Pass fileName to SidebarTOC
       />
       <div className={`main-content ${isSidebarOpen ? "" : "sidebar-closed"}`}>
         {" "}
         {/* Apply ref and class */}
         <div className="app-header-title">
-          The Architect in the Echo:
-          {displayedFileName ? (
-            <span className="file-name-display"> {displayedFileName}</span>
-          ) : (
-            ""
-          )}
+          <div className="title-text">
+            The Architect in the Echo:
+            {displayedFileName ? (
+              <span className="file-name-display"> {displayedFileName}</span>
+            ) : (
+              ""
+            )}
+          </div>
+          <div className="header-controls">
+            <button
+              onClick={handleButtonClick}
+              className={`load-json-button ${fileName ? "selected" : ""}`}
+            >
+              Load JSON
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              accept=".json"
+            />
+          </div>
         </div>
         <Suspense
           fallback={

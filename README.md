@@ -17,7 +17,7 @@ A dynamic and interactive chat viewer built with React, Vite, and rich content r
 - **Dynamic Chat Display:** Renders conversation turns with distinct user, AI thinking, and AI response messages.
 - **Rich Content Support:** Integrates Markdown, LaTeX (via KaTeX), and code highlighting for enhanced readability.
 - **Content Sanitization:** Utilizes DOMPurify to safely render user-generated and AI-generated content.
-
+- **Responsive Design:** Adapts to different screen sizes, with a collapsible sidebar for mobile and desktop.
 - **Optimized Rendering:** Employs `react-window` and `@react-hook/resize-observer` for efficient rendering of long chat histories.
 - **Sidebar Navigation:** Provides a Table of Contents (TOC) for easy navigation through chat logs.
 - **File Picker:** Allows users to load their own JSON chat log files directly from their local disk.
@@ -93,7 +93,7 @@ Example JSON files in the `public` directory:
 
 ## Deployment
 
-This project is set up for static site deployment, perfect for platforms like GitHub Pages, Netlify, or Vercel.
+This project is set up for static site deployment, perfect for platforms like GitHub Pages.
 
 ### Building for Production
 

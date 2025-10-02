@@ -17,6 +17,7 @@
   backface-visibility: hidden;
   background-color: var(--color-background-primary);
   border: 1px solid var(--color-accent-green-alpha-20);
+  box-sizing: border-box;
 }
 
 .bubble:has(.syntax-highlighter-code-block) {

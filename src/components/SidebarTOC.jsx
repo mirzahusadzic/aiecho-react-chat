@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import "../styles/components/_sidebar.css";
@@ -28,9 +28,6 @@ export default function SidebarTOC({
   setScrollTargetIndex,
   expandThinking,
   setExpandThinking,
-  setChunks,
-  setFileName,
-  fileName,
 }) {
   const handleTocClick = React.useCallback(
     (e, originalIndex) => {
@@ -46,48 +43,6 @@ export default function SidebarTOC({
     },
     [chatListRef, originalIndexToValidIndexMap, setScrollTargetIndex],
   );
-
-  const fileInputRef = useRef(null);
-
-  const handleButtonClick = () => {
-    fileInputRef.current.click(); // triggers file picker
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const parts = file.name.split(".");
-      const fileNameToSet =
-        parts.length > 1 && parts[0] !== ""
-          ? parts.slice(0, -1).join(".")
-          : file.name;
-      setFileName(fileNameToSet); // Update the file name in App.jsx state
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const parsedJson = JSON.parse(e.target.result);
-          // console.log('SidebarTOC.jsx: Parsed JSON:', parsedJson); // Removed log
-          const extractedChunks = parsedJson?.chunkedPrompt?.chunks || [];
-          // console.log('SidebarTOC.jsx: Extracted Chunks:', extractedChunks); // Removed log
-          // console.log('SidebarTOC.jsx: Is Extracted Chunks an array?', Array.isArray(extractedChunks)); // Removed log
-
-          if (Array.isArray(extractedChunks)) {
-            setChunks(extractedChunks);
-          } else {
-            console.error("Error: Extracted chat chunks are not an array.");
-            alert(
-              "Error: Selected JSON file does not contain a valid array of chat chunks under 'chunkedPrompt.chunks'.",
-            );
-            setChunks([]); // Clear chunks or handle as appropriate
-          }
-        } catch (error) {
-          console.error("Error parsing JSON file:", error);
-          alert("Error parsing JSON file. Please ensure it's a valid JSON.");
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
 
   return (
     <section
@@ -113,24 +68,8 @@ export default function SidebarTOC({
         </label>
         <div className="sidebar-controls">
           {" "}
-          {/* New wrapper for sticky elements */}
-          <div className="sidebar-control-group">
-            <button
-              onClick={handleButtonClick}
-              className={`sidebar-button ${fileName ? "sidebar-button-selected" : ""}`}
-            >
-              Choose JSON File
-            </button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-              accept=".json"
-            />
-          </div>
           <h3 className="sidebar-title">⚕ User Messages</h3>
-        </div>{" "}
+        </div>
         {/* End sidebar-controls */}
         <nav className="sidebar-nav-scrollable">
           {" "}

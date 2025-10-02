@@ -21,14 +21,6 @@ section[data-testid="stSidebar"] {
   -moz-osx-font-smoothing: antialiased;
 }
 
-@media (max-width: 768px) {
-  section[data-testid="stSidebar"] {
-    flex-basis: 250px;
-    min-width: 200px;
-    max-width: none;
-  }
-}
-
 section[data-testid="stSidebar"] a {
   color: var(--color-text-muted); /* Lighter cyan for links */
   text-decoration: none;
@@ -113,40 +105,8 @@ section[data-testid="stSidebar"].closed {
   margin-bottom: 15px;
 }
 
-.sidebar-button {
-  font-weight: bolder;
-  border: 1px solid var(--color-accent-green-light);
-  background-color: var(--color-accent-green-alpha-50);
-  color: var(--color-text-primary);
-  padding: 6px 6px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85em;
-  width: 100%;
-  text-align: center;
-  transition:
-    background-color 0.2s ease-in-out,
-    color 0.2s ease-in-out,
-    box-shadow 0.2s ease-in-out;
-  box-shadow: var(--color-shadow-sidebar-button);
-}
-
-.sidebar-toggle-button:hover,
-.sidebar-button:hover {
+.sidebar-toggle-button:hover {
   color: var(--color-text-primary) !important;
-  background-color: var(--color-accent-green-light);
-  border-color: var(--color-accent-green-light);
-  box-shadow: var(--color-shadow-sidebar-button-hover);
-}
-
-.sidebar-button-selected {
-  background-color: var(--color-accent-orange-alpha-50);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-accent-green);
-  box-shadow: var(--color-shadow-sidebar-button-selected);
-}
-
-.sidebar-button-selected:hover {
   background-color: var(--color-accent-green-light);
   border-color: var(--color-accent-green-light);
   box-shadow: var(--color-shadow-sidebar-button-hover);
@@ -218,4 +178,24 @@ section[data-testid="stSidebar"].closed {
   order: 1; /* Place before the switch container */
   margin-right: 10px; /* Space between label and switch */
   margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+  section[data-testid="stSidebar"] {
+    flex-basis: 250px;
+    min-width: 200px;
+    max-width: none;
+  }
+
+  section[data-testid="stSidebar"].closed {
+    flex-basis: 0;
+    max-width: 0;
+    min-width: 0;
+    padding-right: 0;
+    overflow: hidden;
+  }
+
+  .main-content.sidebar-closed {
+    margin-left: 0;
+  }
 }
