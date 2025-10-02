@@ -41,11 +41,7 @@ export default function SidebarTOC({
           // Set the scroll target index
           // We don't directly scroll here, but set the state that App.jsx watches
           setScrollTargetIndex(validIndex);
-        } else {
-          // console.warn('validIndex is undefined for originalIndex:', originalIndex); // Removed log
         }
-      } else {
-        // console.warn('chatListRef.current is not available.'); // Removed log
       }
     },
     [chatListRef, originalIndexToValidIndexMap, setScrollTargetIndex],
