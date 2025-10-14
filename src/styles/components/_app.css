@@ -44,6 +44,15 @@ body {
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .app-header-title {
+    font-size: 1.2em;
+    padding: 0 10px;
+    margin-top: 2px;
+    margin-bottom: 1px;
+  }
+}
+
 .file-name-display {
   color: var(--color-accent-orange); /* Amber-orange */
   -webkit-text-fill-color: initial;

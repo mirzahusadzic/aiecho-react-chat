@@ -5,6 +5,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "/aiecho-react-chat/", // Add this line for GitHub Pages deployment
+  server: {
+    host: true, // This makes the server accessible externally
+  },
   build: {
     sourcemap: true,
   },

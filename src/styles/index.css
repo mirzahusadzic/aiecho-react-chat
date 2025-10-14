@@ -7,6 +7,16 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 100%; /* Base font size for rem units */
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 70%; /* Downscale fonts by 30% on mobile */
+  }
+}
+
 /* Body basics */
 body,
 html,
