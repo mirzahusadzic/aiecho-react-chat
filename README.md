@@ -1,5 +1,9 @@
 # AI Echo React Chat
 
+<div align="center" style="margin-top: 20px; margin-bottom: 20px;">
+<img src="./docs/assets/ai-echo-logo.png" alt="eGemma Logo" width="512"/>
+</div>
+
 A dynamic and interactive chat viewer built with React, Vite, and rich content rendering capabilities.
 
 ## Table of Contents
