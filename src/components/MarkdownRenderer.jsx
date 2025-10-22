@@ -1,16 +1,11 @@
 import React, { useMemo } from "react";
-import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
-import markdown from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import LatexRenderer from "./LatexRenderer"; // Import the custom LatexRenderer
-
-SyntaxHighlighter.registerLanguage("bash", bash);
-SyntaxHighlighter.registerLanguage("markdown", markdown);
 
 const syntaxHighlighterStyle = { ...a11yDark };
 const preStyle = a11yDark['pre[class*="language-"]'] || {};
